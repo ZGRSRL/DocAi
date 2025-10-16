@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Output folders
+*_output/
+*_advanced/
+out/
+output/
+streamlit_output/
+tvmes_output/
+tvmes_extended_output/
+tvmes_advanced/
+example_output/
+test_output/
+
+# Backup files
+*_backup.py
+*.bak
+
+# Logs
+*.log
+
+# Data folders (sensitive)
+Data/
+TVMES/
+
+# Temporary files
+*.tmp
+.cache/

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ProductService"
+             targetNamespace="http://example.com/product"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://example.com/product"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <types>
+        <xsd:schema targetNamespace="http://example.com/product">
+            <xsd:element name="GetProductRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="productId" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="GetProductResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="product" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <message name="GetProductRequest">
+        <part name="parameters" element="tns:GetProductRequest"/>
+    </message>
+    <message name="GetProductResponse">
+        <part name="parameters" element="tns:GetProductResponse"/>
+    </message>
+
+    <portType name="ProductPortType">
+        <operation name="GetProduct">
+            <input message="tns:GetProductRequest"/>
+            <output message="tns:GetProductResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="ProductBinding" type="tns:ProductPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetProduct">
+            <soap:operation soapAction="http://example.com/product/GetProduct"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="ProductService">
+        <documentation>Product Information Service</documentation>
+        <port name="ProductPort" binding="tns:ProductBinding">
+            <soap:address location="http://sap-mii-server.example.com:50000/ProductService"/>
+        </port>
+    </service>
+
+</definitions>

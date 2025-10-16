@@ -1,0 +1,8 @@
+javalang
+lxml
+networkx
+pydantic
+click
+rich
+streamlit
+pandas

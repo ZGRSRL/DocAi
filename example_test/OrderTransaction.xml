@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Transaction name="OrderProcessing" version="1.0">
+    <Description>SAP MII Transaction for Order Processing</Description>
+    
+    <Input>
+        <Parameter Name="OrderID" Type="String" Required="true"/>
+        <Parameter Name="CustomerID" Type="String" Required="true"/>
+    </Input>
+    
+    <Output>
+        <Parameter Name="Status" Type="String"/>
+        <Parameter Name="Message" Type="String"/>
+    </Output>
+    
+    <Steps>
+        <Step Action="ExecuteSQL" Target="GetOrderDetails" Name="Step1_GetOrder">
+            <Parameter Name="Query" Value="SELECT * FROM orders WHERE order_id = {OrderID}"/>
+            <Parameter Name="DataSource" Value="SAP_ME_DB"/>
+        </Step>
+        
+        <Step Action="CallTransaction" Target="ValidateCustomer" Name="Step2_Validate">
+            <Parameter Name="CustomerID" Value="{CustomerID}"/>
+        </Step>
+        
+        <Step Action="ExecuteSQL" Target="UpdateOrderStatus" Name="Step3_Update">
+            <Parameter Name="Query" Value="UPDATE orders SET status = 'PROCESSED' WHERE order_id = {OrderID}"/>
+            <Parameter Name="DataSource" Value="SAP_ME_DB"/>
+        </Step>
+        
+        <Step Action="CallWebService" Target="NotifyERP" Name="Step4_Notify">
+            <Parameter Name="URL" Value="http://erp-system.example.com/api/notify"/>
+            <Parameter Name="Method" Value="POST"/>
+        </Step>
+    </Steps>
+</Transaction>
