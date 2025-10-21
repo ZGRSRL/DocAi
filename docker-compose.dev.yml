@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Development version with hot reload
+  sapdocai-dev:
+    build: .
+    container_name: sapdocai-dev
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+      - ./streamlit_output:/app/streamlit_output
+      - ./visualization_output:/app/visualization_output
+      - ./pdf_reports:/app/pdf_reports
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_RUN_ON_SAVE=true
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=auto
+    command: ["python", "-m", "streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.runOnSave=true"]
+    depends_on:
+      - mysql
+    networks:
+      - sapdocai-dev-network
+
+  # MySQL for development
+  mysql:
+    image: mysql:8.0
+    container_name: sapdocai-mysql-dev
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: dev_root
+      MYSQL_DATABASE: sapdocai_dev
+      MYSQL_USER: dev_user
+      MYSQL_PASSWORD: dev_pass
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - sapdocai-dev-network
+
+volumes:
+  mysql_dev_data:
+
+networks:
+  sapdocai-dev-network:
+    driver: bridge
