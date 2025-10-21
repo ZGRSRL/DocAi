@@ -351,12 +351,16 @@ def parse_i18n_properties(fp: Path) -> Dict[str, str]:
 
 
 def detect_database_access(fp: Path) -> List[Dict[str, Any]]:
-    """Dosyada veritabanı erişimlerini tespit et"""
+    """Dosyada veritabanı erişimlerini tespit et (i18n dosyalarını hariç tut)"""
     try:
+        # i18n dosyalarını hariç tut
+        if fp.name.endswith('.properties') or 'i18n' in str(fp).lower():
+            return []
+            
         text = fp.read_text(encoding='utf-8', errors='ignore')
         db_accesses = []
         
-        # JDBC patterns
+        # Gerçek database erişim kalıpları
         jdbc_patterns = [
             r'jdbc:(\w+)://([^/\s]+)(?:/([^\s]+))?',
             r'Connection\s*\.\s*createStatement',
@@ -367,15 +371,15 @@ def detect_database_access(fp: Path) -> List[Dict[str, Any]]:
             r'Statement\s*\.\s*executeUpdate'
         ]
         
-        # SQL patterns
+        # Gerçek SQL komutları (i18n metinlerini hariç tut)
         sql_patterns = [
-            r'SELECT\s+.*?\s+FROM\s+(\w+)',
-            r'INSERT\s+INTO\s+(\w+)',
-            r'UPDATE\s+(\w+)\s+SET',
-            r'DELETE\s+FROM\s+(\w+)',
-            r'CREATE\s+TABLE\s+(\w+)',
-            r'ALTER\s+TABLE\s+(\w+)',
-            r'DROP\s+TABLE\s+(\w+)'
+            r'(?:^|\s)SELECT\s+.*?\s+FROM\s+(\w+)',
+            r'(?:^|\s)INSERT\s+INTO\s+(\w+)',
+            r'(?:^|\s)UPDATE\s+(\w+)\s+SET',
+            r'(?:^|\s)DELETE\s+FROM\s+(\w+)',
+            r'(?:^|\s)CREATE\s+TABLE\s+(\w+)',
+            r'(?:^|\s)ALTER\s+TABLE\s+(\w+)',
+            r'(?:^|\s)DROP\s+TABLE\s+(\w+)'
         ]
         
         # Database connection patterns
@@ -398,11 +402,27 @@ def detect_database_access(fp: Path) -> List[Dict[str, Any]]:
             r'Core\s*Data\s*Services'
         ]
         
-        all_patterns = jdbc_patterns + sql_patterns + conn_patterns + sap_db_patterns
+        # ME/MII specific database patterns
+        me_mii_db_patterns = [
+            r'fetchBySQL\s*\(',
+            r'executeSQL\s*\(',
+            r'me_executeTransaction\s*\(',
+            r'executeTransaction\s*\(',
+            r'fetchBySQL\s*\(',
+            r'getData\s*\(',
+            r'getDataBySQL\s*\('
+        ]
+        
+        all_patterns = jdbc_patterns + sql_patterns + conn_patterns + sap_db_patterns + me_mii_db_patterns
         
         for pattern in all_patterns:
             matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
             for match in matches:
+                # i18n metinlerini filtrele
+                match_text = match.group(0).lower()
+                if any(keyword in match_text for keyword in ['error.label', 'notification.label', 'message.label']):
+                    continue
+                    
                 db_accesses.append({
                     "type": "Database Access",
                     "pattern": pattern,
@@ -418,8 +438,12 @@ def detect_database_access(fp: Path) -> List[Dict[str, Any]]:
 
 
 def detect_rest_endpoints(fp: Path) -> List[Dict[str, Any]]:
-    """REST endpoint'lerini tespit et"""
+    """REST endpoint'lerini tespit et (i18n dosyalarını hariç tut)"""
     try:
+        # i18n dosyalarını hariç tut
+        if fp.name.endswith('.properties') or 'i18n' in str(fp).lower():
+            return []
+            
         text = fp.read_text(encoding='utf-8', errors='ignore')
         endpoints = []
         
@@ -437,9 +461,28 @@ def detect_rest_endpoints(fp: Path) -> List[Dict[str, Any]]:
             r'@DELETE\s+@Path\s*\(\s*["\']([^"\']+)["\']'
         ]
         
-        for pattern in rest_patterns:
+        # SAPUI5/JavaScript endpoint patterns
+        js_endpoint_patterns = [
+            r'\.ajax\s*\(\s*\{[^}]*url\s*:\s*["\']([^"\']+)["\']',
+            r'fetch\s*\(\s*["\']([^"\']+)["\']',
+            r'new\s+sap\.ui\.model\.odata\.v2\.ODataModel\s*\(\s*["\']([^"\']+)["\']',
+            r'new\s+sap\.ui\.model\.odata\.v4\.ODataModel\s*\(\s*["\']([^"\']+)["\']',
+            r'\.read\s*\(\s*["\']([^"\']+)["\']',
+            r'\.create\s*\(\s*["\']([^"\']+)["\']',
+            r'\.update\s*\(\s*["\']([^"\']+)["\']',
+            r'\.remove\s*\(\s*["\']([^"\']+)["\']'
+        ]
+        
+        all_patterns = rest_patterns + js_endpoint_patterns
+        
+        for pattern in all_patterns:
             matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
             for match in matches:
+                # i18n metinlerini filtrele
+                match_text = match.group(0).lower()
+                if any(keyword in match_text for keyword in ['error.label', 'notification.label', 'message.label']):
+                    continue
+                    
                 endpoints.append({
                     "type": "REST Endpoint",
                     "pattern": pattern,
@@ -455,13 +498,25 @@ def detect_rest_endpoints(fp: Path) -> List[Dict[str, Any]]:
 
 
 def detect_bls_steps(fp: Path) -> List[Dict[str, Any]]:
-    """BLS/Transaction adımlarını tespit et"""
+    """BLS/Transaction adımlarını tespit et (i18n dosyalarını hariç tut)"""
     try:
+        # i18n dosyalarını hariç tut
+        if fp.name.endswith('.properties') or 'i18n' in str(fp).lower():
+            return []
+            
         text = fp.read_text(encoding='utf-8', errors='ignore')
         bls_steps = []
         
-        # BLS patterns
+        # Gerçek BLS step patterns (ME/MII specific)
         bls_patterns = [
+            r'tracer\.executeTransaction\s*\(\s*["\']([^"\']+)["\']',
+            r'me_executeTransaction\s*\(\s*["\']([^"\']+)["\']',
+            r'executeTransaction\s*\(\s*["\']([^"\']+)["\']',
+            r'<Service\s+name\s*=\s*["\']([^"\']*BLS[^"\']*)["\']',
+            r'<Service\s+name\s*=\s*["\']([^"\']*TRX[^"\']*)["\']',
+            r'BLS_TRX_\w+',
+            r'TRX_\w+',
+            r'BLS_\w+',
             r'BLS\s*Step',
             r'Transaction\s*Step',
             r'Business\s*Logic\s*Step',
@@ -475,6 +530,11 @@ def detect_bls_steps(fp: Path) -> List[Dict[str, Any]]:
         for pattern in bls_patterns:
             matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
             for match in matches:
+                # i18n metinlerini filtrele
+                match_text = match.group(0).lower()
+                if any(keyword in match_text for keyword in ['error.label', 'notification.label', 'message.label', 'checkbox cannot be changed']):
+                    continue
+                    
                 bls_steps.append({
                     "type": "BLS Step",
                     "pattern": pattern,
@@ -487,6 +547,142 @@ def detect_bls_steps(fp: Path) -> List[Dict[str, Any]]:
         
     except Exception as e:
         return []
+
+
+def detect_ui_components(fp: Path) -> Dict[str, Any]:
+    """SAPUI5 UI bileşenlerini tespit et"""
+    try:
+        if not fp.suffix.lower() in ['.xml', '.view.xml', '.fragment.xml']:
+            return {}
+            
+        text = fp.read_text(encoding='utf-8', errors='ignore')
+        
+        # UI component patterns
+        ui_components = {
+            "buttons": 0,
+            "tables": 0,
+            "forms": 0,
+            "inputs": 0,
+            "dialogs": 0,
+            "lists": 0,
+            "panels": 0,
+            "tabs": 0,
+            "charts": 0,
+            "trees": 0
+        }
+        
+        # Button patterns
+        button_patterns = [
+            r'<Button',
+            r'<sap\.m\.Button',
+            r'<core:Button',
+            r'<Button\s+',
+            r'<sap\.m\.Button\s+'
+        ]
+        
+        # Table patterns
+        table_patterns = [
+            r'<Table',
+            r'<sap\.m\.Table',
+            r'<core:Table',
+            r'<List',
+            r'<sap\.m\.List'
+        ]
+        
+        # Form patterns
+        form_patterns = [
+            r'<Form',
+            r'<sap\.ui\.layout\.form\.Form',
+            r'<SimpleForm',
+            r'<sap\.ui\.layout\.form\.SimpleForm'
+        ]
+        
+        # Input patterns
+        input_patterns = [
+            r'<Input',
+            r'<sap\.m\.Input',
+            r'<TextArea',
+            r'<sap\.m\.TextArea',
+            r'<ComboBox',
+            r'<sap\.m\.ComboBox',
+            r'<Select',
+            r'<sap\.m\.Select'
+        ]
+        
+        # Dialog patterns
+        dialog_patterns = [
+            r'<Dialog',
+            r'<sap\.m\.Dialog',
+            r'<Popover',
+            r'<sap\.m\.Popover'
+        ]
+        
+        # Panel patterns
+        panel_patterns = [
+            r'<Panel',
+            r'<sap\.m\.Panel',
+            r'<Page',
+            r'<sap\.m\.Page'
+        ]
+        
+        # Tab patterns
+        tab_patterns = [
+            r'<TabContainer',
+            r'<sap\.m\.TabContainer',
+            r'<Tab',
+            r'<sap\.m\.Tab'
+        ]
+        
+        # Chart patterns
+        chart_patterns = [
+            r'<Chart',
+            r'<sap\.viz\.Chart',
+            r'<VizFrame',
+            r'<sap\.viz\.VizFrame'
+        ]
+        
+        # Tree patterns
+        tree_patterns = [
+            r'<Tree',
+            r'<sap\.m\.Tree',
+            r'<TreeTable',
+            r'<sap\.ui\.table\.TreeTable'
+        ]
+        
+        # Count patterns
+        pattern_groups = [
+            (button_patterns, "buttons"),
+            (table_patterns, "tables"),
+            (form_patterns, "forms"),
+            (input_patterns, "inputs"),
+            (dialog_patterns, "dialogs"),
+            (panel_patterns, "panels"),
+            (tab_patterns, "tabs"),
+            (chart_patterns, "charts"),
+            (tree_patterns, "trees")
+        ]
+        
+        for patterns, component_type in pattern_groups:
+            for pattern in patterns:
+                matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+                ui_components[component_type] += len(list(matches))
+        
+        # Lists are counted separately
+        list_patterns = [
+            r'<List',
+            r'<sap\.m\.List',
+            r'<StandardListItem',
+            r'<sap\.m\.StandardListItem'
+        ]
+        
+        for pattern in list_patterns:
+            matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+            ui_components["lists"] += len(list(matches))
+        
+        return ui_components
+        
+    except Exception as e:
+        return {}
 
 
 def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
@@ -602,7 +798,7 @@ def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
     return result
 
 
-def build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses=None, rest_endpoints=None, bls_steps=None) -> str:
+def build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses=None, rest_endpoints=None, bls_steps=None, ui_components=None) -> str:
     """Gelişmiş özet rapor"""
     
     lines = []
@@ -633,6 +829,18 @@ def build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses=N
         lines.append(f"- **BLS Steps:** {len(bls_steps)} detected")
     else:
         lines.append("- **BLS Steps:** 0 detected")
+    
+    # UI Components Summary
+    if ui_components:
+        total_ui = sum(ui_components.values())
+        lines.append(f"- **UI Components:** {total_ui} total")
+        lines.append(f"  - Buttons: {ui_components.get('buttons', 0)}")
+        lines.append(f"  - Tables/Lists: {ui_components.get('tables', 0) + ui_components.get('lists', 0)}")
+        lines.append(f"  - Forms: {ui_components.get('forms', 0)}")
+        lines.append(f"  - Inputs: {ui_components.get('inputs', 0)}")
+        lines.append(f"  - Dialogs: {ui_components.get('dialogs', 0)}")
+    else:
+        lines.append("- **UI Components:** 0 detected")
     
     lines.append("")
     
@@ -815,21 +1023,39 @@ def build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses=N
                     lines.append(f"- {flow['operation']}")
             lines.append("")
     
+    # UI Components Analysis
+    if ui_components:
+        lines.append("## 🎨 UI Components Analysis\n")
+        lines.append(f"- **Buttons:** {ui_components.get('buttons', 0)}")
+        lines.append(f"- **Tables/Lists:** {ui_components.get('tables', 0) + ui_components.get('lists', 0)}")
+        lines.append(f"- **Forms:** {ui_components.get('forms', 0)}")
+        lines.append(f"- **Input Fields:** {ui_components.get('inputs', 0)}")
+        lines.append(f"- **Dialogs:** {ui_components.get('dialogs', 0)}")
+        lines.append(f"- **Panels/Pages:** {ui_components.get('panels', 0)}")
+        lines.append(f"- **Tabs:** {ui_components.get('tabs', 0)}")
+        lines.append(f"- **Charts:** {ui_components.get('charts', 0)}")
+        lines.append(f"- **Trees:** {ui_components.get('trees', 0)}")
+        lines.append("")
+    
     # Recommendations
     lines.append("## 💡 Recommendations\n")
     lines.append("### Code Quality")
     lines.append("- ✅ SAPUI5 best practices detected")
     lines.append("- ✅ MVC pattern implemented")
     lines.append("- ✅ Data binding utilized")
+    if ui_components and sum(ui_components.values()) > 0:
+        lines.append("- ✅ UI Components properly structured")
     lines.append("")
     
     lines.append("### Potential Improvements")
     if len(sapui5_deep['services']['rest']) > 10:
         lines.append("- ⚠️ Consider consolidating REST API calls")
-    if ui['inputs'] > 20:
+    if ui_components and ui_components.get('inputs', 0) > 20:
         lines.append("- ⚠️ Large number of input fields - consider form optimization")
     if not sapui5_deep['i18n']:
         lines.append("- ⚠️ No i18n detected - consider adding internationalization")
+    if ui_components and ui_components.get('buttons', 0) > 50:
+        lines.append("- ⚠️ High button count - consider UI simplification")
     lines.append("")
     
     return "\n".join(lines)
@@ -856,10 +1082,22 @@ def main_advanced():
         sapui5_deep = analyze_sapui5_deep(root)
         
         # Veritabanı ve endpoint tespiti
-        print("[3/4] Database and endpoint detection...")
+        print("[3/5] Database and endpoint detection...")
         db_accesses = []
         rest_endpoints = []
         bls_steps = []
+        ui_components_total = {
+            "buttons": 0,
+            "tables": 0,
+            "forms": 0,
+            "inputs": 0,
+            "dialogs": 0,
+            "lists": 0,
+            "panels": 0,
+            "tabs": 0,
+            "charts": 0,
+            "trees": 0
+        }
         
         # Tüm dosyaları tara
         for file_path in root.rglob("*"):
@@ -867,10 +1105,15 @@ def main_advanced():
                 db_accesses.extend(detect_database_access(file_path))
                 rest_endpoints.extend(detect_rest_endpoints(file_path))
                 bls_steps.extend(detect_bls_steps(file_path))
+                
+                # UI Components tespiti
+                ui_components = detect_ui_components(file_path)
+                for component_type, count in ui_components.items():
+                    ui_components_total[component_type] += count
         
         # Rapor oluştur
-        print("[4/4] Generating reports...")
-        summary = build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses, rest_endpoints, bls_steps)
+        print("[4/5] Generating reports...")
+        summary = build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses, rest_endpoints, bls_steps, ui_components_total)
         (out / 'ADVANCED_SUMMARY.md').write_text(summary, encoding='utf-8')
         
         # Deep SAPUI5 JSON
@@ -884,10 +1127,15 @@ def main_advanced():
         (out / 'SUMMARY.md').write_text(base_summary, encoding='utf-8')
         
         print(f"\n[bold]Done.[/bold] Outputs -> {out.resolve()}")
-        print(" - ADVANCED_SUMMARY.md (New!)")
-        print(" - sapui5_deep_analysis.json (New!)")
+        print(" - ADVANCED_SUMMARY.md (Enhanced!)")
+        print(" - sapui5_deep_analysis.json (Enhanced!)")
         print(" - SUMMARY.md")
-        print(" - sapui5_details.json\n")
+        print(" - sapui5_details.json")
+        print(f"\n[bold green]Analysis Quality Improvements:[/bold green]")
+        print(f" - Database Access: {len(db_accesses)} (filtered i18n)")
+        print(f" - BLS Steps: {len(bls_steps)} (filtered i18n)")
+        print(f" - REST Endpoints: {len(rest_endpoints)} (enhanced patterns)")
+        print(f" - UI Components: {sum(ui_components_total.values())} total\n")
     
     run()
 
