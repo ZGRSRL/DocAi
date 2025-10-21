@@ -186,6 +186,17 @@ class SAPUI5Visualizer:
                     'press': elem.get('press', ''),
                     'visible': elem.get('visible', 'true')
                 }
+                
+                # Tablo için özel bilgiler
+                if tag == 'Table':
+                    control['items'] = elem.get('items', '')
+                    control['model'] = elem.get('items', '').split('/')[0] if '/' in elem.get('items', '') else ''
+                    
+                    # Tablo sütunlarını say
+                    columns = list(elem.iter())
+                    column_count = len([col for col in columns if col.tag.split('}')[-1] == 'Column'])
+                    control['column_count'] = column_count
+                
                 controls.append(control)
         
         return controls
@@ -350,9 +361,21 @@ class SAPUI5Visualizer:
         </div>
 """
             elif control['type'] == 'Table':
+                # Tablo ismini ve ID'sini göster
+                table_name = control.get('id', 'Unknown Table')
+                table_text = control.get('text', '')
+                display_name = f"{table_name}" if table_text else f"{table_name}"
+                
+                # Tablo detayları
+                model_info = f"Model: {control.get('model', 'No Model')}" if control.get('model') else ""
+                column_info = f"Columns: {control.get('column_count', 0)}" if control.get('column_count') else ""
+                
                 html += f"""
         <div class="control">
-            <h3>{control['text'] or 'Table'}</h3>
+            <h3>📊 {display_name}</h3>
+            <p><strong>ID:</strong> {control.get('id', 'No ID')}</p>
+            {f'<p><strong>{model_info}</strong></p>' if model_info else ''}
+            {f'<p><strong>{column_info}</strong></p>' if column_info else ''}
             <table class="table">
                 <thead><tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr></thead>
                 <tbody>
