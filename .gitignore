@@ -57,9 +57,9 @@ test_output/
 # Logs
 *.log
 
-# Data folders (sensitive)
-Data/
-TVMES/
+# Data folders (sensitive) - Temporarily disabled for analysis
+# Data/
+# TVMES/
 
 # Temporary files
 *.tmp

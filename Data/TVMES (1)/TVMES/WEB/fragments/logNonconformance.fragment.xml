@@ -1,0 +1,127 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:t="sap.ui.table" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+                         xmlns:f="sap.ui.layout.form">
+  <Dialog id="idLogNonconformanceDialog" stretch="true" title="{i18n>LOG_NC}">
+    <content>
+      <SplitContainer
+        id="SplitContDemo"
+        initialDetail="detail"
+        initialMaster="master">
+        <detailPages>
+          <Page
+            id="detail"
+            title="{i18n>NC_CODE_LIST}"
+            backgroundDesign= "Solid"
+            showHeader="true">
+            <HBox width="100%"  justifyContent="SpaceBetween" >
+              <VBox width="65%" height="100%">
+                <ScrollContainer id="idRepairScroll" vertical="true" horizontal="true" focusable="false" height="100%">
+                </ScrollContainer>
+                <Table id="idNCListTable" items="{componentNcCodeListModel>/ncGroupsAndCodes/0/ncCodes/}" noDataText="NC Grup Seçiniz" showNoData="true" width="100%" mode="SingleSelectMaster" selectionChange="onPressGetNcDataFields" class="nc-tree-table" rowHeight="50">
+                  <columns> 
+                    <Column hAlign="Begin" vAlign="Middle"  width="30%">
+                      <FormattedText htmlText="{i18n>OEE_LABEL_NC_CODE}" />
+                    </Column>
+                    <Column hAlign="Begin" vAlign="Middle" width="70%">
+                      <FormattedText htmlText="{i18n>OEE_LABEL_NC_DESC}" />
+                    </Column>
+                  </columns>
+                  <items>
+                    <ColumnListItem>
+                      <FormattedText htmlText="{componentNcCodeListModel>name}" wrapping="false" />
+                      <FormattedText htmlText="{componentNcCodeListModel>description}" wrapping="false" />
+                    </ColumnListItem>
+                  </items>
+                </Table>
+                
+              </VBox>
+              <VBox  justifyContent="Start" width="30%" class="sapUiSmallMarginEnd">   
+                <Input id="idNCListFilterInput" ></Input>
+                <HBox justifyContent="SpaceBetween" width="100%">
+                  <Button text="1" press="addNumberToNCInput" class="numeric-keyboard" width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="2" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="3" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                </HBox>
+                <HBox justifyContent="SpaceBetween" width="100%">
+                  <Button text="4" press="addNumberToNCInput" class="numeric-keyboard" width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="5" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="6" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                </HBox>
+                <HBox justifyContent="SpaceBetween" width="100%">
+                  <Button text="7" press="addNumberToNCInput" class="numeric-keyboard" width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="8" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                  <Button text="9" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                </HBox>
+                <HBox justifyContent="Center" width="100%">
+                  <Button press="addNumberToNCInput" type="Reject" icon="sap-icon://nav-back" class="numeric-keyboard" width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>                  
+                  </Button>
+                  <Button text="0" press="addNumberToNCInput" class="numeric-keyboard " width="100%">
+                    <layoutData>
+                      <FlexItemData growFactor="1" />
+                    </layoutData>
+                  </Button>
+                </HBox>
+              </VBox>
+            </HBox>
+          </Page>
+        </detailPages>
+        <masterPages>
+          <Page
+            id="master"
+            title="{i18n>NC_GROUP_LIST}"
+            backgroundDesign= "List">
+            <List items="{componentNcListModel>/ncGroupList/}">
+              <StandardListItem title="{componentNcListModel>description}"  type="Navigation" press="onPressGetNcCodesByGroup" />
+            </List>
+          </Page>
+          
+        </masterPages>
+      </SplitContainer>
+      
+      
+    </content>
+    <buttons>
+      <Button width="7rem" id="idCloseEntryNCDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject"
+              press="closeEntryNCDialog" class="sapUiSmallMarginBegin btn-reject"
+              icon="sap-icon://exit-full-screen" />
+    </buttons>
+  </Dialog>
+</core:FragmentDefinition>

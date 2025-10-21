@@ -1,0 +1,80 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+    <Dialog id="idOrderDetailsDialog" title="{i18n>OEE_LABEL_ORDER_DETAILS}" stretch="true">
+        <l:BlockLayout>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_ORDER_NUMBER}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>shopOrder}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_ORDER_OPERATIONS}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Button id="idStartOrderButton" text="Başlat" type="Accept" press="onStartOrder"
+                            visible="{= ${ShopOrdersModel>status} !== 'ACTIVE'}" class="order-start-button order-button"  enabled="{= ${ShopOrdersModel>status} !== 'ACTIVE'}"
+                            width="6rem" />
+                        <Button id="idStopOrderButton" text="Bitir" type="Reject" press="onCloseOrder"
+                            visible="{= ${ShopOrdersModel>status} === 'ACTIVE'}" class="order-stop-button order-button" 
+                            width="6rem" />
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_MODEL_NO}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>productionCode}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_ITEM_NO}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>item}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_BRAND_DESC}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>brand}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_ITEM_DESC}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>itemDescription}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_PLANNED_QUAN}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input id="idOrderDetailsPlannedQuanInput" width="10rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>plannedQty}" class="order-quan-input"/>
+                        <Button press="onPressKeyboard" width="5rem" class="order-button"
+                            icon="sap-icon://keyboard-and-mouse"  enabled="{= ${ShopOrdersModel>status} !== 'ACTIVE'}"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ORDER_DETAILS_REMAINING_QUAN}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ShopOrdersModel>remainingCabinetQty}" class="order-quan-input"/>
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+        </l:BlockLayout>
+        <buttons>
+            <Button id="idCloseOrderDetailsDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject"
+                press="onCloseOrderDetailsDialog" icon="sap-icon://exit-full-screen" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

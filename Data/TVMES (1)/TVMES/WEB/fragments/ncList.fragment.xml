@@ -1,0 +1,108 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:t="sap.ui.table" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog id="logNonconformanceDialog" stretch="true">
+       <content>
+                            <HBox width="100%" justifyContent="SpaceBetween" >
+                                <VBox width="65%" height="100%">
+                                    <ScrollContainer id="idRepairScroll" vertical="true" horizontal="true" focusable="false" height="100%">
+                                        <Table id="idLastViewNCListTable" items="{lastViewNcCodeListModel>/}" showNoData="true" width="100%" mode="SingleSelectMaster" selectionChange="onPressGetNcDataFieldsForLastView" class="nc-tree-table" rowHeight="50">
+                                            <columns>
+                                                <Column hAlign="Center" vAlign="Middle" width="15rem">
+                                                    <FormattedText htmlText="{i18n>OEE_LABEL_NC_GROUP}" />
+                                                </Column>
+                                                <Column hAlign="Begin" vAlign="Middle" width="10rem">
+                                                    <FormattedText htmlText="{i18n>OEE_LABEL_NC_CODE}" />
+                                                </Column>
+                                                <Column hAlign="Begin" vAlign="Middle">
+                                                    <FormattedText htmlText="{i18n>OEE_LABEL_NC_DESC}" />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <FormattedText htmlText="{lastViewNcCodeListModel>ncGroup}" wrapping="false" />
+                                                    <FormattedText htmlText="{lastViewNcCodeListModel>ncCode}" wrapping="false" />
+                                                    <FormattedText htmlText="{lastViewNcCodeListModel>description}" wrapping="false" />
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </ScrollContainer>
+                                </VBox>
+                                <VBox justifyContent="Start" width="30%" class="sapUiSmallMarginEnd">
+                                    <Input id="idLastViewNCListFilterInput" ></Input>
+                                    <HBox justifyContent="SpaceBetween" width="100%">
+                                        <Button text="1" press="addNumberToLastViewNCInput" class="numeric-keyboard" width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="2" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="3" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                    </HBox>
+                                    <HBox justifyContent="SpaceBetween" width="100%">
+                                        <Button text="4" press="addNumberToLastViewNCInput" class="numeric-keyboard" width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="5" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="6" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                    </HBox>
+                                    <HBox justifyContent="SpaceBetween" width="100%">
+                                        <Button text="7" press="addNumberToLastViewNCInput" class="numeric-keyboard" width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="8" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="9" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                    </HBox>
+                                    <HBox justifyContent="Center" width="100%">
+                                        <Button press="addNumberToLastViewNCInput" type="Reject" icon="sap-icon://nav-back" class="numeric-keyboard" width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                        <Button text="0" press="addNumberToLastViewNCInput" class="numeric-keyboard " width="100%">
+                                            <layoutData>
+                                                <FlexItemData growFactor="1" />
+                                            </layoutData>
+                                        </Button>
+                                    </HBox>
+                                </VBox>
+                            </HBox>
+        </content>
+        <buttons>
+    <Button width="12rem"  text="Kaydet ve Kapat" type="Emphasized"
+                press="onPressCloseAndSaveNConLastView" class="sapUiSmallMarginEnd btn-accept" icon="sap-icon://decline" />
+            <Button width="7rem" id="idPressSaveEntryNC" text="{i18n>OEE_BTN_SAVE}" type="Accept"
+                press="onPressSaveNConLastView" class="sapUiSmallMarginEnd btn-accept" icon="sap-icon://download" />
+            <Button width="7rem" id="idCloseEntryNCDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject"
+                press="closeEntryNCDialog" class="sapUiSmallMarginBegin btn-reject"
+                icon="sap-icon://exit-full-screen" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

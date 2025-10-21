@@ -1,0 +1,115 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog
+		id="ncTestDialog"
+		title="{i18n>QC_TITLE}"
+		stretch="true"
+		resizable="true"
+		draggable="true">
+		<content>
+			<SplitApp id="ncSplitApp" mode="ShowHideMode">
+				<masterPages>
+					<Page id="masterPage" showHeader="false">
+						<content>
+							<List
+								id="masterList"
+								mode="SingleSelectMaster"
+								itemPress="onNCGroupSelect"
+								items="{ncGroupsModel>/NCGroups}"
+								>
+								<layoutData>
+									<layout:SplitterLayoutData size="14rem" resizable="false" />
+								</layoutData>
+								<items>
+									<StandardListItem
+										title="{ncGroupsModel>description}"
+										description="{ncGroupsModel>ncGroup}"
+										type="Active" />
+								</items>
+							</List>
+						</content>
+					</Page>
+				</masterPages>
+				<detailPages>
+					<Page id="detailPage" showHeader="false">
+						<content>
+								<!-- Upper part - NC Types -->
+								<ScrollContainer height="330px" vertical="true">
+									<FlexBox
+										id="ncTypesContainer"
+										wrap="Wrap"
+										justifyContent="Start"
+										class="sapUiSmallMarginBeginEnd">
+										<!-- NC Type tiles will be added dynamically -->
+									</FlexBox>
+								</ScrollContainer>
+								
+								<!-- Lower part - Selected NC Codes Table -->
+								<VBox class="sapUiSmallMarginBottom">
+									<Table
+										id="idSelectedNCsTable"
+										inset="false"
+										items="{selectedNCsModel>/items}">
+										<columns>
+											<Column width="5rem">
+												<Text text="{i18n>QC_NC_CODE}" />
+											</Column>
+											<Column width="10rem">
+												<Text text="{i18n>QC_NC_DESC}" />
+											</Column>
+											<Column width="10rem">
+												<Text text="{i18n>QC_NC_REPAIR}" />
+											</Column>
+											<Column width="10rem">
+												<Text text="{i18n>QC_NC_REPAIR_DESC}" />
+											</Column>
+											<Column width="3rem">
+												<Text text="" />
+											</Column>
+											<Column visible="false">
+												<Text text="Sorter" />
+											</Column>
+										</columns>
+										<items>
+											<ColumnListItem 
+												class="{= ${selectedNCsModel>repaired} ? 'greenRow' :  'turquoiseRow'  }"
+												vAlign="Middle">
+												<cells>
+													<Label text="{selectedNCsModel>code}" />
+													<Label text="{selectedNCsModel>failureDesc}" />
+													<Button 
+														type="Accept" 
+														icon="sap-icon://add-equipment" 
+														text="{=  ${selectedNCsModel>repairCode} ? ${selectedNCsModel>repairCode} : ${i18n>selectRepairCode.label}}" 
+														enabled="{= !${selectedNCsModel>repaired}}"
+														press="onSelectRepairCode" />
+													<TextArea
+														cols="30" 
+														height="50px" 
+														value="{selectedNCsModel>comment}"
+														enabled="{= !${selectedNCsModel>repaired}}" />
+													<Button 
+														type="Reject" 
+														icon="sap-icon://delete" 
+														enabled="{= ${selectedNCsModel>ncWillLog}}"
+														press="onDeleteNCCode" />
+													<Label text="{selectedNCsModel>sortOrder}" />
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</VBox>
+						</content>
+					</Page>
+				</detailPages>
+			</SplitApp>
+		</content>
+		<buttons>
+			<Button id="setNCCodesforSFCBtn" text="{i18n>QC_SEND}" type="Accept" press="onSendNCCodes" />
+			<Button text="{i18n>QC_CANCEL}" type="Reject" press="onCloseNCDialog" />
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition> 

@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:grid="sap.ui.layout.cssgrid"
+    xmlns:layout="sap.ui.layout">
+    <Dialog id="reasonCodesDialog" title="{i18n>LOG_NC}" icon="sap-icon://survey" contentWidth="70%">
+        <content>
+
+            <f:GridList id="gridList" includeItemInSelection="true" mode="MultiSelect" items="{ncReasonCodesModel>/}" selectionChange="onSelectionChange" delete="onDelete" class="sapUiResponsiveContentPadding">
+                <f:customLayout>
+                    <grid:GridBasicLayout gridTemplateColumns="repeat(auto-fit, minmax(16rem, 1fr))" gridGap="0.5rem"/>
+                </f:customLayout>
+                <f:GridListItem detailPress="onDetailPress" selected="{ncReasonCodesModel>selected}" press="onPress" highlight="Warning">
+                    <HBox height="100%" class="sapUiSmallMarginBottom sapUiSmallMarginBegin"  alignItems="Center">
+                        <VBox>
+                            <Label text="{ncReasonCodesModel>reasonCode}" wrapping="true"/>
+                            <Title text="{ncReasonCodesModel>reasonCodeDescription}" wrapping="true" />
+                        </VBox>
+                    </HBox>
+                </f:GridListItem>
+            </f:GridList>
+
+        </content>
+        <buttons>
+            <Button text="{i18n>OEE_BTN_SAVE}" type="Accept" press="onPressReasonCodesAccept" />
+            <Button text="{i18n>OEE_BTN_CLOSE}" type="Reject" press="onPressReasonCodesCancel" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

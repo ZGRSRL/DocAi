@@ -1,4 +1,4 @@
-# 📋 SAP ME/MII Folder Analyzer — Proje Genel Bakış
+# 📋 SAPDOCAI — Proje Genel Bakış
 
 ## 🎯 Proje Amacı
 

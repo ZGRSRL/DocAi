@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>POD</title>
+	<script id="sap-ui-bootstrap"
+		src="/sapui5-1.71/resources/sap-ui-core.js"
+		data-sap-ui-theme="sap_fiori_3_dark" 
+		data-sap-ui-resourceroots='{
+			"production": "./"
+		}'
+		data-sap-ui-oninit="module:production/initMockServer"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true">
+	</script>
+    <script type="text/javascript" src="scripts/ScannerDetection.js"></script>
+    <script type="text/javascript" src="scripts/mqttws311.js"></script>
+</head>
+<body class="sapUiBody">
+	<div data-sap-ui-component data-name="production" data-id="container" data-settings='{"id" : "nav"}' data-height="99%"></div>
+</body>
+</html>

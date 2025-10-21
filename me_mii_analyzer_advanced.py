@@ -31,7 +31,10 @@ def parse_controller_deep(fp: Path) -> Dict[str, Any]:
             "odata_operations": [],
             "message_toasts": [],
             "navigations": [],
-            "validations": []
+            "validations": [],
+            "sap_me_apis": [],
+            "sfc_operations": [],
+            "me_mii_patterns": []
         }
         
         # Function definitions
@@ -91,7 +94,72 @@ def parse_controller_deep(fp: Path) -> Dict[str, Any]:
         if 'validate' in text.lower() or 'check' in text.lower():
             info["validations"].append("Has validation logic")
         
-        return info if any([info["functions"], info["api_calls"], info["odata_models"]]) else None
+        # SAP ME API Detection
+        sap_me_patterns = [
+            r'com\.sap\.me\.(\w+)',
+            r'sap\.me\.(\w+)',
+            r'ME\.(\w+)',
+            r'ShopFloorControl\.(\w+)',
+            r'SFC\.(\w+)',
+            r'Order\.(\w+)',
+            r'Resource\.(\w+)',
+            r'WorkCenter\.(\w+)',
+            r'Operation\.(\w+)',
+            r'Routing\.(\w+)'
+        ]
+        
+        for pattern in sap_me_patterns:
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                api_class = match.group(1)
+                info["sap_me_apis"].append({
+                    "class": api_class,
+                    "pattern": pattern,
+                    "context": text[max(0, match.start()-50):match.end()+50]
+                })
+        
+        # SFC/Order/Resource Parameter Flow Detection
+        sfc_patterns = [
+            r'SFC\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'Order\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'Resource\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'WorkCenter\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'Operation\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'getSFC\(\)',
+            r'getOrder\(\)',
+            r'getResource\(\)',
+            r'setSFC\(',
+            r'setOrder\(',
+            r'setResource\('
+        ]
+        
+        for pattern in sfc_patterns:
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                info["sfc_operations"].append({
+                    "operation": match.group(0),
+                    "pattern": pattern,
+                    "context": text[max(0, match.start()-30):match.end()+30]
+                })
+        
+        # ME/MII Specific Patterns
+        me_mii_patterns = [
+            r'ShopFloorControl',
+            r'ManufacturingExecution',
+            r'ProductionOrder',
+            r'WorkInstruction',
+            r'QualityInspection',
+            r'MaterialConsumption',
+            r'LaborTracking',
+            r'EquipmentIntegration',
+            r'DataCollection',
+            r'Traceability'
+        ]
+        
+        for pattern in me_mii_patterns:
+            if re.search(pattern, text, re.IGNORECASE):
+                info["me_mii_patterns"].append(pattern)
+        
+        return info if any([info["functions"], info["api_calls"], info["odata_models"], 
+                          info["sap_me_apis"], info["sfc_operations"], info["me_mii_patterns"]]) else None
         
     except Exception as e:
         return None
@@ -165,6 +233,105 @@ def parse_view_xml(fp: Path) -> Dict[str, Any]:
         return None
 
 
+def parse_xml_file(fp: Path) -> Dict[str, Any]:
+    """XML dosyasını ME/MII özel analizi ile parse et"""
+    try:
+        text = fp.read_text(encoding='utf-8', errors='ignore')
+        
+        info = {
+            "file": str(fp),
+            "type": "XML",
+            "bls_steps": [],
+            "wsdl_endpoints": [],
+            "parameters": [],
+            "sfc_flow": [],
+            "me_mii_operations": [],
+            "parameter_mapping": []
+        }
+        
+        # BLS/Transaction Step Detection
+        step_patterns = [
+            r'<Step[^>]*Action="([^"]*)"[^>]*Target="([^"]*)"[^>]*/?>',
+            r'<Transaction[^>]*Name="([^"]*)"[^>]*>',
+            r'<BLS[^>]*Name="([^"]*)"[^>]*>'
+        ]
+        
+        for pattern in step_patterns:
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                if len(match.groups()) >= 2:
+                    info["bls_steps"].append({
+                        "action": match.group(1),
+                        "target": match.group(2),
+                        "context": text[max(0, match.start()-100):match.end()+100]
+                    })
+                else:
+                    info["bls_steps"].append({
+                        "name": match.group(1),
+                        "context": text[max(0, match.start()-100):match.end()+100]
+                    })
+        
+        # SFC/Order/Resource Parameter Flow Detection
+        sfc_flow_patterns = [
+            r'<Parameter[^>]*Name="([^"]*)"[^>]*Value="([^"]*)"[^>]*/?>',
+            r'<Input[^>]*Name="([^"]*)"[^>]*Value="([^"]*)"[^>]*/?>',
+            r'<Output[^>]*Name="([^"]*)"[^>]*Value="([^"]*)"[^>]*/?>',
+            r'SFC\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'Order\s*=\s*["\']?([^"\'\s]+)["\']?',
+            r'Resource\s*=\s*["\']?([^"\'\s]+)["\']?'
+        ]
+        
+        for pattern in sfc_flow_patterns:
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                if len(match.groups()) >= 2:
+                    info["sfc_flow"].append({
+                        "parameter": match.group(1),
+                        "value": match.group(2),
+                        "pattern": pattern,
+                        "context": text[max(0, match.start()-50):match.end()+50]
+                    })
+                else:
+                    info["sfc_flow"].append({
+                        "operation": match.group(0),
+                        "pattern": pattern,
+                        "context": text[max(0, match.start()-50):match.end()+50]
+                    })
+        
+        # ME/MII Specific Operations
+        me_mii_ops = [
+            r'ShopFloorControl',
+            r'ManufacturingExecution',
+            r'ProductionOrder',
+            r'WorkInstruction',
+            r'QualityInspection',
+            r'MaterialConsumption',
+            r'LaborTracking',
+            r'EquipmentIntegration',
+            r'DataCollection',
+            r'Traceability',
+            r'WorkCenter',
+            r'Operation',
+            r'Routing'
+        ]
+        
+        for op in me_mii_ops:
+            if re.search(op, text, re.IGNORECASE):
+                info["me_mii_operations"].append(op)
+        
+        # Parameter Mapping (Input -> Output flow)
+        param_mapping_pattern = r'<Parameter[^>]*Name="([^"]*)"[^>]*>.*?<Parameter[^>]*Name="([^"]*)"[^>]*>'
+        for match in re.finditer(param_mapping_pattern, text, re.DOTALL | re.IGNORECASE):
+            info["parameter_mapping"].append({
+                "from": match.group(1),
+                "to": match.group(2),
+                "context": text[max(0, match.start()-100):match.end()+100]
+            })
+        
+        return info if any([info["bls_steps"], info["sfc_flow"], info["me_mii_operations"]]) else None
+        
+    except Exception as e:
+        return None
+
+
 def parse_i18n_properties(fp: Path) -> Dict[str, str]:
     """i18n properties dosyasını parse et"""
     try:
@@ -181,6 +348,145 @@ def parse_i18n_properties(fp: Path) -> Dict[str, str]:
         
     except Exception:
         return {}
+
+
+def detect_database_access(fp: Path) -> List[Dict[str, Any]]:
+    """Dosyada veritabanı erişimlerini tespit et"""
+    try:
+        text = fp.read_text(encoding='utf-8', errors='ignore')
+        db_accesses = []
+        
+        # JDBC patterns
+        jdbc_patterns = [
+            r'jdbc:(\w+)://([^/\s]+)(?:/([^\s]+))?',
+            r'Connection\s*\.\s*createStatement',
+            r'PreparedStatement',
+            r'ResultSet',
+            r'Statement\s*\.\s*execute',
+            r'Statement\s*\.\s*executeQuery',
+            r'Statement\s*\.\s*executeUpdate'
+        ]
+        
+        # SQL patterns
+        sql_patterns = [
+            r'SELECT\s+.*?\s+FROM\s+(\w+)',
+            r'INSERT\s+INTO\s+(\w+)',
+            r'UPDATE\s+(\w+)\s+SET',
+            r'DELETE\s+FROM\s+(\w+)',
+            r'CREATE\s+TABLE\s+(\w+)',
+            r'ALTER\s+TABLE\s+(\w+)',
+            r'DROP\s+TABLE\s+(\w+)'
+        ]
+        
+        # Database connection patterns
+        conn_patterns = [
+            r'DataSource',
+            r'ConnectionPool',
+            r'getConnection',
+            r'DriverManager',
+            r'SQLException'
+        ]
+        
+        # SAP specific patterns
+        sap_db_patterns = [
+            r'SAP\s*DB',
+            r'HANA',
+            r'ABAP\s*Database',
+            r'Open\s*SQL',
+            r'Native\s*SQL',
+            r'CDS\s*View',
+            r'Core\s*Data\s*Services'
+        ]
+        
+        all_patterns = jdbc_patterns + sql_patterns + conn_patterns + sap_db_patterns
+        
+        for pattern in all_patterns:
+            matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                db_accesses.append({
+                    "type": "Database Access",
+                    "pattern": pattern,
+                    "match": match.group(0),
+                    "line": text[:match.start()].count('\n') + 1,
+                    "context": text[max(0, match.start()-50):match.end()+50]
+                })
+        
+        return db_accesses
+        
+    except Exception as e:
+        return []
+
+
+def detect_rest_endpoints(fp: Path) -> List[Dict[str, Any]]:
+    """REST endpoint'lerini tespit et"""
+    try:
+        text = fp.read_text(encoding='utf-8', errors='ignore')
+        endpoints = []
+        
+        # REST patterns
+        rest_patterns = [
+            r'@RequestMapping\s*\(\s*["\']([^"\']+)["\']',
+            r'@GetMapping\s*\(\s*["\']([^"\']+)["\']',
+            r'@PostMapping\s*\(\s*["\']([^"\']+)["\']',
+            r'@PutMapping\s*\(\s*["\']([^"\']+)["\']',
+            r'@DeleteMapping\s*\(\s*["\']([^"\']+)["\']',
+            r'@Path\s*\(\s*["\']([^"\']+)["\']',
+            r'@GET\s+@Path\s*\(\s*["\']([^"\']+)["\']',
+            r'@POST\s+@Path\s*\(\s*["\']([^"\']+)["\']',
+            r'@PUT\s+@Path\s*\(\s*["\']([^"\']+)["\']',
+            r'@DELETE\s+@Path\s*\(\s*["\']([^"\']+)["\']'
+        ]
+        
+        for pattern in rest_patterns:
+            matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                endpoints.append({
+                    "type": "REST Endpoint",
+                    "pattern": pattern,
+                    "path": match.group(1) if len(match.groups()) > 0 else match.group(0),
+                    "line": text[:match.start()].count('\n') + 1,
+                    "context": text[max(0, match.start()-50):match.end()+50]
+                })
+        
+        return endpoints
+        
+    except Exception as e:
+        return []
+
+
+def detect_bls_steps(fp: Path) -> List[Dict[str, Any]]:
+    """BLS/Transaction adımlarını tespit et"""
+    try:
+        text = fp.read_text(encoding='utf-8', errors='ignore')
+        bls_steps = []
+        
+        # BLS patterns
+        bls_patterns = [
+            r'BLS\s*Step',
+            r'Transaction\s*Step',
+            r'Business\s*Logic\s*Step',
+            r'ME\s*Step',
+            r'MII\s*Step',
+            r'Workflow\s*Step',
+            r'Process\s*Step',
+            r'Activity\s*Step'
+        ]
+        
+        for pattern in bls_patterns:
+            matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                bls_steps.append({
+                    "type": "BLS Step",
+                    "pattern": pattern,
+                    "step": match.group(0),
+                    "line": text[:match.start()].count('\n') + 1,
+                    "context": text[max(0, match.start()-50):match.end()+50]
+                })
+        
+        return bls_steps
+        
+    except Exception as e:
+        return []
 
 
 def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
@@ -205,7 +511,12 @@ def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
         },
         "navigation_flow": [],
         "data_bindings": [],
-        "event_handlers": []
+        "event_handlers": [],
+        "sap_me_apis": [],
+        "sfc_operations": [],
+        "me_mii_patterns": [],
+        "xml_analysis": [],
+        "parameter_flows": []
     }
     
     for fp in root.rglob("*"):
@@ -229,6 +540,34 @@ def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
                 for api in controller_data["api_calls"]:
                     if api not in result["services"]["rest"]:
                         result["services"]["rest"].append(api)
+                
+                # SAP ME API'leri
+                for api in controller_data["sap_me_apis"]:
+                    result["sap_me_apis"].append(api)
+                
+                # SFC operasyonları
+                for sfc in controller_data["sfc_operations"]:
+                    result["sfc_operations"].append(sfc)
+                
+                # ME/MII pattern'leri
+                for pattern in controller_data["me_mii_patterns"]:
+                    if pattern not in result["me_mii_patterns"]:
+                        result["me_mii_patterns"].append(pattern)
+        
+        # XML dosyaları için ME/MII analizi
+        elif fp.suffix == '.xml':
+            xml_data = parse_xml_file(fp)
+            if xml_data:
+                result["xml_analysis"].append(xml_data)
+                
+                # Parameter flow'ları
+                for flow in xml_data["sfc_flow"]:
+                    result["parameter_flows"].append(flow)
+                
+                # ME/MII operasyonları
+                for op in xml_data["me_mii_operations"]:
+                    if op not in result["me_mii_patterns"]:
+                        result["me_mii_patterns"].append(op)
         
         # View files
         elif fp.suffix == '.xml' and 'view' in fp.parts:
@@ -263,7 +602,7 @@ def analyze_sapui5_deep(root: Path) -> Dict[str, Any]:
     return result
 
 
-def build_advanced_summary(base_result, sapui5_basic, sapui5_deep) -> str:
+def build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses=None, rest_endpoints=None, bls_steps=None) -> str:
     """Gelişmiş özet rapor"""
     
     lines = []
@@ -274,6 +613,92 @@ def build_advanced_summary(base_result, sapui5_basic, sapui5_deep) -> str:
     lines.append(f"- **Project Type:** SAPUI5/Fiori Application")
     lines.append(f"- **Controllers:** {len(sapui5_deep['controllers'])} files")
     lines.append(f"- **Views:** {len(sapui5_deep['views'])} files")
+    lines.append(f"- **Fragments:** {len(sapui5_deep['fragments'])} files")
+    lines.append(f"- **i18n Files:** {len(sapui5_deep['i18n'])} files")
+    
+    # Database Access Summary
+    if db_accesses:
+        lines.append(f"- **Database Accesses:** {len(db_accesses)} detected")
+    else:
+        lines.append("- **Database Accesses:** 0 detected")
+    
+    # REST Endpoints Summary
+    if rest_endpoints:
+        lines.append(f"- **REST Endpoints:** {len(rest_endpoints)} detected")
+    else:
+        lines.append("- **REST Endpoints:** 0 detected")
+    
+    # BLS Steps Summary
+    if bls_steps:
+        lines.append(f"- **BLS Steps:** {len(bls_steps)} detected")
+    else:
+        lines.append("- **BLS Steps:** 0 detected")
+    
+    lines.append("")
+    
+    # Database Access Details
+    if db_accesses:
+        lines.append("## 🗄️ Database Access Analysis")
+        lines.append("")
+        
+        # Group by type
+        db_types = {}
+        for access in db_accesses:
+            db_type = access.get('type', 'Unknown')
+            if db_type not in db_types:
+                db_types[db_type] = []
+            db_types[db_type].append(access)
+        
+        for db_type, accesses in db_types.items():
+            lines.append(f"### {db_type} ({len(accesses)} found)")
+            for access in accesses[:5]:  # Show first 5
+                lines.append(f"- **Line {access.get('line', '?')}:** {access.get('match', access.get('step', 'Unknown'))}")
+                if 'context' in access:
+                    context = access['context'].strip()
+                    if len(context) > 100:
+                        context = context[:100] + "..."
+                    lines.append(f"  ```")
+                    lines.append(f"  {context}")
+                    lines.append(f"  ```")
+            if len(accesses) > 5:
+                lines.append(f"- ... and {len(accesses) - 5} more")
+            lines.append("")
+    
+    # REST Endpoints Details
+    if rest_endpoints:
+        lines.append("## 🌐 REST Endpoints Analysis")
+        lines.append("")
+        
+        for endpoint in rest_endpoints[:10]:  # Show first 10
+            lines.append(f"- **{endpoint.get('path', 'Unknown')}** (Line {endpoint.get('line', '?')})")
+            if 'context' in endpoint:
+                context = endpoint['context'].strip()
+                if len(context) > 100:
+                    context = context[:100] + "..."
+                lines.append(f"  ```")
+                lines.append(f"  {context}")
+                lines.append(f"  ```")
+        if len(rest_endpoints) > 10:
+            lines.append(f"- ... and {len(rest_endpoints) - 10} more")
+        lines.append("")
+    
+    # BLS Steps Details
+    if bls_steps:
+        lines.append("## ⚙️ BLS Steps Analysis")
+        lines.append("")
+        
+        for step in bls_steps[:10]:  # Show first 10
+            lines.append(f"- **{step.get('step', 'Unknown')}** (Line {step.get('line', '?')})")
+            if 'context' in step:
+                context = step['context'].strip()
+                if len(context) > 100:
+                    context = context[:100] + "..."
+                lines.append(f"  ```")
+                lines.append(f"  {context}")
+                lines.append(f"  ```")
+        if len(bls_steps) > 10:
+            lines.append(f"- ... and {len(bls_steps) - 10} more")
+        lines.append("")
     lines.append(f"- **Fragments:** {len(sapui5_deep['fragments'])} files")
     lines.append(f"- **i18n Keys:** {len(sapui5_deep['i18n'])} translations")
     lines.append(f"- **OData Services:** {len(sapui5_deep['services']['odata'])} endpoints")
@@ -344,6 +769,52 @@ def build_advanced_summary(base_result, sapui5_basic, sapui5_deep) -> str:
             lines.append(f"- `{key}`: {value}")
         lines.append("")
     
+    # SAP ME/MII Specific Analysis
+    if sapui5_deep['sap_me_apis'] or sapui5_deep['sfc_operations'] or sapui5_deep['me_mii_patterns']:
+        lines.append("## 🏭 SAP ME/MII Specific Analysis\n")
+        
+        if sapui5_deep['sap_me_apis']:
+            lines.append("### SAP ME API Usage\n")
+            api_classes = {}
+            for api in sapui5_deep['sap_me_apis']:
+                class_name = api['class']
+                if class_name not in api_classes:
+                    api_classes[class_name] = 0
+                api_classes[class_name] += 1
+            
+            for class_name, count in sorted(api_classes.items(), key=lambda x: x[1], reverse=True):
+                lines.append(f"- **{class_name}**: {count} usage(s)")
+            lines.append("")
+        
+        if sapui5_deep['sfc_operations']:
+            lines.append("### SFC/Order/Resource Operations\n")
+            sfc_types = {}
+            for sfc in sapui5_deep['sfc_operations']:
+                op_type = sfc['operation'].split('=')[0].strip() if '=' in sfc['operation'] else sfc['operation']
+                if op_type not in sfc_types:
+                    sfc_types[op_type] = 0
+                sfc_types[op_type] += 1
+            
+            for op_type, count in sorted(sfc_types.items(), key=lambda x: x[1], reverse=True):
+                lines.append(f"- **{op_type}**: {count} operation(s)")
+            lines.append("")
+        
+        if sapui5_deep['me_mii_patterns']:
+            lines.append("### ME/MII Domain Patterns\n")
+            for pattern in sapui5_deep['me_mii_patterns']:
+                lines.append(f"- {pattern}")
+            lines.append("")
+        
+        if sapui5_deep['parameter_flows']:
+            lines.append("### Parameter Flow Analysis\n")
+            lines.append(f"Total parameter flows detected: {len(sapui5_deep['parameter_flows'])}\n")
+            for flow in sapui5_deep['parameter_flows'][:10]:  # İlk 10
+                if 'parameter' in flow:
+                    lines.append(f"- **{flow['parameter']}** = {flow['value']}")
+                else:
+                    lines.append(f"- {flow['operation']}")
+            lines.append("")
+    
     # Recommendations
     lines.append("## 💡 Recommendations\n")
     lines.append("### Code Quality")
@@ -381,12 +852,25 @@ def main_advanced():
         base_result, sapui5_basic = base_analyzer.analyze_folder_extended(root)
         
         # Deep SAPUI5 analiz
-        print("[2/3] Deep SAPUI5 analysis...")
+        print("[2/4] Deep SAPUI5 analysis...")
         sapui5_deep = analyze_sapui5_deep(root)
         
+        # Veritabanı ve endpoint tespiti
+        print("[3/4] Database and endpoint detection...")
+        db_accesses = []
+        rest_endpoints = []
+        bls_steps = []
+        
+        # Tüm dosyaları tara
+        for file_path in root.rglob("*"):
+            if file_path.is_file() and file_path.suffix.lower() in ['.java', '.js', '.xml', '.properties']:
+                db_accesses.extend(detect_database_access(file_path))
+                rest_endpoints.extend(detect_rest_endpoints(file_path))
+                bls_steps.extend(detect_bls_steps(file_path))
+        
         # Rapor oluştur
-        print("[3/3] Generating reports...")
-        summary = build_advanced_summary(base_result, sapui5_basic, sapui5_deep)
+        print("[4/4] Generating reports...")
+        summary = build_advanced_summary(base_result, sapui5_basic, sapui5_deep, db_accesses, rest_endpoints, bls_steps)
         (out / 'ADVANCED_SUMMARY.md').write_text(summary, encoding='utf-8')
         
         # Deep SAPUI5 JSON

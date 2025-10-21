@@ -1,0 +1,40 @@
+<mvc:View viewName="appView" controllerName="production.controller.App"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core" displayBlock="true" width="100%" height="100%">
+    <App height="50px">
+        <Page title="" showHeader="false" enableScrolling="false" id="page">
+            <content>
+                <Toolbar id="idToolbar" width="100%" class="page-header">
+                    <content>
+
+                        <Image height="35px" mode="Image" src="./image/flow-icon.png" class="sapUiTinyMarginTop sapUiSmallMarginEnd"></Image>
+                        <Button id="idAdministration" type="Accept" width="4rem" press="onPressAdministration" class="btn-accept sapUiTinyMarginEnd" visible="false" icon="sap-icon://settings"/>
+                        <Button id="connect" type="Reject" width="3rem" class="btn-accept sapUiTinyMarginEnd" icon="sap-icon://disconnected"/>
+                        <Button id="idHome" type="Emphasized" width="3rem" press="onPressHome" class="btn-accept sapUiTinyMarginEnd" visible="false" icon="sap-icon://home"/>
+
+                        <ToolbarSpacer/>
+                        <Select id="idWorkcenterCombo" width="11rem"  items="{WorkcenterModel>/}" change="onChangeWorkcenter" class="sapUiMediumMarginEnd">
+                            <core:ListItem key="{WorkcenterModel>workCenter}" text="{WorkcenterModel>description}"/>
+                        </Select>
+                        <Title id="idClock" titleStyle="H1" class="sapUiMediumMarginEnd"/>
+                        <Select id="idResrceCombo" width="11rem" items="{ResrceModel>/}"  change="onChangeResource">
+                            <core:ListItem key="{ResrceModel>resourceRef}-{ResrceModel>resource}-{ResrceModel>operationBo}-{ResrceModel>resourceType}" text="{ResrceModel>description} - {ResrceModel>resource}"/>
+                        </Select>
+                        <ToolbarSpacer/>
+                        <Select id="idLanguageCombo" width="7rem" change="onChangeLanguage" autoAdjustWidth="true" class="sapUiSmallMarginEnd">
+                            <core:Item key="tr" text="Türkçe"/>
+                            <core:Item key="en" text="English"/>
+                            <core:Item key="bn" text="বাংলা"/>
+                        </Select>
+                        <Button id="idChangeOperator" text="{OperatorDetailForHDRModel>/0/OPERATOR_NAME}" width="13rem" class="sapUiSmallMarginEnd" press="onOpenOperatorLoginDialog" icon="sap-icon://employee" visible="false"/>
+                        <Button id="idRefresh" type="Accept" width="4rem" press="onPressRefresh" icon="sap-icon://refresh" class="btn-accept "/>
+                    </content>
+                </Toolbar>
+            </content>
+        </Page>
+    </App>
+    <!--	<Shell appWidthLimited="false"> -->
+    <App id="app" height="95%"/>
+    <!--</Shell> -->
+</mvc:View>

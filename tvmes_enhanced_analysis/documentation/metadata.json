@@ -1,0 +1,6 @@
+{
+  "generated_at": "2025-10-21T08:55:15.632866",
+  "dev_summary": "BaseController refactoring ve servis merkezile\u015ftirme - TraceabilityService ve SfcOperationService olu\u015fturuldu",
+  "analysis_dir": "tvmes_enhanced_analysis",
+  "model": "me-mii-consult:latest"
+}

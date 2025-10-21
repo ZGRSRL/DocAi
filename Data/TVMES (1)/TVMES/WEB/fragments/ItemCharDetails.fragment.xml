@@ -1,0 +1,113 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+    <Dialog id="idItemCharDetailsDialog" title="{i18n>OEE_LABEL_ITEM_CHAR_DETAIL}" stretch="true">
+        <l:BlockLayout keepFontSize="true">
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_MODEL_NAME}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ItemCharDetailsModel>/brand}" />
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_MODEL_CODE}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ItemCharDetailsModel>/model}" />
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_PROD_FORMAT}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ItemCharDetailsModel>/productionFormat}" />
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_CON}" titleAlignment="Center" backgroundColorSet="ColorSet9"
+                    backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{= ${ItemCharDetailsModel>/connected} === '1' ? 'EVET' : 'HAYIR'}" />
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+           <l:BlockLayoutRow>
+				<l:BlockLayoutCell title="{i18n>OEE_LABEL_PACKING_TYPE}" titleAlignment="Center" backgroundColorSet="ColorSet9"
+					backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+					<HBox justifyContent="Center" alignItems="Center">
+						<Text class="textBold" text="Shrink"></Text>
+						<Switch type="AcceptReject" state="{= ${ItemCharDetailsModel>/packingType} === '1'}" customTextOn="1" customTextOff="0"
+							id="packingTypeSwitch" change="onChangePackingType" enabled="true" class="sapUiTinyMargin"/>
+						<Text class="textBold" text="İstasyon"></Text>
+					</HBox>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_FREQUENCY}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <VBox justifyContent="Center" alignItems="Center">
+                        <HBox justifyContent="Center" alignItems="Center">
+                            <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                                value="{ItemCharDetailsModel>/frequency}" />
+                        </HBox>
+                    </VBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_VOLTAGE}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Input width="15rem" enabled="true" editable="false" textAlign="Center"
+                            value="{ItemCharDetailsModel>/voltage}" />
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_EGT1}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Text class="textBold" text="Hayır"></Text>
+                        <Switch type="AcceptReject" state="{= ${ItemCharDetailsModel>/egt1} === '1'}"
+                            customTextOn="1" customTextOff="0" id="egt1Switch" change="switchChange" enabled="false" />
+                        <Text class="textBold" text="Evet"></Text>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_EGT2}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Text class="textBold" text="Hayır"></Text>
+                        <Switch type="AcceptReject" state="{= ${ItemCharDetailsModel>/egt2} === '1'}"
+                            customTextOn="1" customTextOff="0" id="egt2Switch" change="switchChange" enabled="false" />
+                        <Text class="textBold" text="Evet"></Text>
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_FONK_MINOR}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Text class="textBold" text="Hayır"></Text>
+                        <Switch type="AcceptReject" state="{= ${ItemCharDetailsModel>/fTestShort} === '1'}"
+                            customTextOn="1" customTextOff="0" id="ftkSwitch" change="switchChange" enabled="false" />
+                        <Text class="textBold" text="Evet"></Text>
+                    </HBox>
+                </l:BlockLayoutCell>
+                <l:BlockLayoutCell title="{i18n>OEE_LABEL_ITEM_FONK_MAJOR}" titleAlignment="Center"
+                    backgroundColorSet="ColorSet9" backgroundColorShade="ShadeB" class="sapUiTinyMargin">
+                    <HBox justifyContent="Center" alignItems="Center">
+                        <Text class="textBold" text="Hayır"></Text>
+                        <Switch type="AcceptReject" state="{= ${ItemCharDetailsModel>/fTestLong} === '1'}"
+                            customTextOn="1" customTextOff="0" id="ftlSwitch" change="switchChange" enabled="false" />
+                        <Text class="textBold" text="Evet"></Text>
+                    </HBox>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+        </l:BlockLayout>
+        <buttons>
+            <Button id="idSaveItemCharDetailsDialog" text="{i18n>OEE_BTN_SAVE}" type="Accept"
+                press="saveItemCharDetailsDialog" icon="sap-icon://accept" visible="false" />
+            <Button id="idCloseItemCharDetailsDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject"
+                press="closeItemCharDetailsDialog" icon="sap-icon://exit-full-screen" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,4 +1,4 @@
-# 🔍 SAP ME/MII Folder Analyzer
+# 🔍 SAPDOCAI
 
 **Advanced code analysis tool for SAP ME/MII and SAPUI5/Fiori projects**
 
@@ -37,8 +37,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/ZGRSRL/DocAi.git
-cd DocAi
+git clone https://github.com/ZGRSRL/SAPDOCAI.git
+cd SAPDOCAI
 
 # Install dependencies
 pip install -r requirements.txt
@@ -104,6 +104,22 @@ pandas
 ---
 
 ## 🎨 Streamlit UI Features
+
+## 🤖 ME/MII Consultant (Ollama + RAG)
+
+1. Install Ollama and pull a base model (e.g., `ollama pull llama3.1:8b`).
+2. Create the consultant model from `Modelfile`:
+```bash
+ollama create me-mii-consultant -f Modelfile
+```
+3. Ask questions grounded in latest analysis outputs (default: `./streamlit_output`):
+```bash
+python rag_consultant.py "MII'de BLS ile dış REST çağrısında timeout nasıl yönetilir?" --out ./streamlit_output --model me-mii-consultant
+```
+On Windows PowerShell:
+```powershell
+./run_consultant.ps1 -Question "SAPUI5'te OData v2 create hatasında en iyi pratikler?" -OutDir ./streamlit_output -Model me-mii-consultant
+```
 
 - **One-Click Folder Selection** — Quick access buttons
 - **Real-time Progress** — Progress bar and status updates
@@ -250,4 +266,4 @@ For issues and questions:
 
 ---
 
-**Made with ❤️ for SAP ME/MII developers**
+**Made with ❤️ for SAP ME/MII developers - SAPDOCAI**

@@ -1,0 +1,197 @@
+/* table css */
+table thead {
+	position: sticky;
+	top: 0px;
+	opacity: 100;
+	z-index: 1;
+  }
+  
+  table thead th span bdi {
+	font-weight: bold;
+  }
+
+/* Popup CSS */
+
+.centeredContent {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //background-color: #ffffff; /* White background */
+  height:80vh;
+}
+
+
+.custImg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  width: auto;
+}
+
+.custImg2{
+  margin-top: -4px; /* Reset margin for all images inside VBox */
+  padding: 0; /* Reset padding for all images inside VBox */
+}
+.spacedImages {
+  margin-bottom: 20px; /* Vertical spacing between images */
+}
+
+  
+  /*Button css*/
+  
+  .pageColor {
+	background-color: #DCDCDC;
+  }
+  
+  .Textclass {
+	font-weight: bold;
+	font-size: 2rem;
+	position: absolute;
+	top: 230px;
+	left: 68px;
+  }
+  
+  .TableColer {
+	background-color: #F8F8FF;
+	font-weight: bold;
+	text-align: center;
+  }
+  
+  .rowColor {
+	background-color: #0E0E42 !important;
+  }
+  
+  .activeRowColor {
+	background-color: #0f4c05 !important;
+  }
+
+  .holdedRowColor {
+	background-color: #6e6707 !important;
+  }
+  
+  .newRowColor {
+	background-color: #055d5c !important;
+  }
+  .alternativeRowColor {
+	background-color: #055d5c !important;
+  }
+  .completeRowColor {
+	background-color: #A0522D !important;
+  }
+  
+  .doneRowColor {
+	background-color: #05254c !important;
+  }
+  
+  .sapUiTinyMarginTopBotto {
+	margin-top: 55px;
+	margin-right: 68px;
+	margin-bottom: 68px;
+	margin-left: 150px;
+  }
+
+.fixedHeader {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+}
+
+span.sapMBtnInner.sapMBtnAttention {
+    background-image: none;
+    background-color: #fff3b7;
+    border-color: #fff3b7;
+    color: #b95100;
+}
+
+.label-print-dialog .sapMTitleStyleAuto {
+    font-size: 2rem !important;
+}
+
+.item-desc-label .sapMDLIValue{
+  white-space: break-spaces !important;
+
+}
+
+.item-desc-label .sapMDLILabel{
+  white-space: break-spaces !important;
+
+}
+
+.item-desc-label .sapMLIBContent{
+  line-height: 1.5rem !important;
+}
+
+/* sonradan eklenen mk */
+
+.customDialog .sapMDialogScrollCont {
+    padding: 1rem;
+}
+
+.customHBox {
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.customLabel {
+    width: 150px;
+    font-weight: bold;
+}
+
+.customText {
+    margin-left: 1rem;
+}
+
+.customButtonBar {
+    padding-top: 1rem;
+}
+
+.customButton {
+    margin-left: 0.5rem;
+}
+
+.customButton.startButton {
+    background-color: green;
+    color: white;
+}
+
+.customButton.stopButton {
+    background-color: red;
+    color: white;
+}
+
+.customInput {
+    width: 100%;            /* Giriş alanını genişlet */
+    margin-top: 0.5rem;     /* Üstten boşluk */
+    margin-bottom: 0.5rem;  /* Alttan boşluk */
+}
+
+/* İsteğe bağlı olarak daha fazla stil özelliği ekleyebilirsiniz, örneğin: */
+.customInput .sapMInputBaseInner {
+    border: 1px solid #ccc;  /* Kenarlık rengi */
+    border-radius: 4px;      /* Köşeleri yuvarlak yap */
+}
+
+.customInput .sapMInputBaseFocus {
+    border-color: #007aff;   /* Odaklandığında kenarlık rengi */
+}
+.size1 {
+	font-size : 1.5rem;
+}
+.size2 {
+	font-size : 2.5rem;
+}
+
+/*custom data css*/
+tr[data-isSelected="N"] {
+	background-color: #0f4c05 !important;
+}
+tr[data-isSelected="Y"] {
+	background-color: #A0522D !important;
+}
+tr[data-isSelected="U"] {
+	background-color: #0E0E42 !important;
+}

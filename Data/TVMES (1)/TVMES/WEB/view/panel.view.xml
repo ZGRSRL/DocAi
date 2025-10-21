@@ -1,0 +1,96 @@
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:u="sap.ui.unified"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="production.controller.panel" displayBlock="true">
+    <Page showHeader="false">
+        <content>
+            <VBox height="100%" width="100%">
+                <HBox id="idHeaderPanel" class="">
+                    <VBox id="idHeaderPanelLeft" justifyContent="Start" alignItems="Start" width="28%">
+                        <List width="100%" class="list-text">
+                            <items>
+                                <DisplayListItem label="{i18n>OEE_LABEL_ITEM_CODE}" value="{podHDRModel>/ITEM}" visible="true" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_ORDER_NUMBER}" value="{podHDRModel>/SHOP_ORDER}" visible="true" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_SFC}" value="{podHDRModel>/SFC}" visible="true" type="Inactive" selected="false" />
+                            </items>
+                        </List>
+                    </VBox>
+                    <VBox width="44%" height="100%" justifyContent="Center" alignItems="Center">
+                        <HBox width="100%" height="100%" justifyContent="SpaceAround" alignItems="Center" class="sapUiMediumMarginBeginEnd">
+                                    <Button text="{i18n>OEE_LABEL_NEW_PRODUCT}" type="Accept" icon="sap-icon://media-play" press="onPressNewSFC" class="header-buttonS  main-buttonS" />
+                                    <Button text="{i18n>OEE_LABEL_HOLD_PRODUCT}" type="Warning" icon="sap-icon://pending" press="onPressHoldProduct" class="header-buttonS  main-buttonS"  />
+                                    <Button text="{i18n>OEE_LABEL_REPRINT_LABEL}" icon="sap-icon://print" press="openNCLoginDialog" class="header-buttonS  main-buttonS"  />
+                                    <Button text="{i18n>OEE_LABEL_COMPLETE_PRODUCT}" type="Reject" icon="sap-icon://complete" press="onPressCompleteSFC" class="header-buttonS  main-buttonS"  />
+                        </HBox>
+                    </VBox>
+                    <VBox id="idHeaderPanelRight" justifyContent="Start" alignItems="End" width="28%">
+                        <List width="100%" class="list-text">
+                            <items>
+                                <DisplayListItem id="idPlanedQuan" label="{i18n>OEE_LABEL_PLANNED_QUAN}" value="{podHDRModel>/PLANNED_QUAN}" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_PRODUCED_QUAN}" value="{podHDRModel>/THIS_STATION_COMPLETED}" type="Inactive" selected="false" />
+                                <DisplayListItem id="idRemainingQuan" label="{i18n>OEE_LABEL_REMAINING_QUAN}" value="{podHDRModel>/THIS_STATION_REMAINING}" visible="true" type="Inactive" selected="false" />
+                            </items>
+                        </List>
+                    </VBox>
+                </HBox>
+
+                <VBox justifyContent="Start" alignItems="Center" class="" renderType="Bare">
+                    <Button id="idGeneralInfoMessages" text="{messageModel>/notificationMessage}" type="{messageModel>/notificationMessageType}" width="100%" visible="false" class="buttonBigger" />
+                    <Button id="idInfoMessages" text="{parts: ['messageModel>/infoMessage', 'i18n>/${messageModel>/infoMessage}'], formatter: '.formatter.getText'}" type="{messageModel>/infoMessageType}" width="100%" visible="true" />
+                </VBox>
+                <HBox height="70%">
+                    <ScrollContainer vertical="true" horizontal="true" focusable="false" height="520px">
+                        <Table id="idShopOrdersModel" items="{ShopOrdersModel>/}" showNoData="true" width="100%">
+                            <columns>
+                                <Column hAlign="Center" vAlign="Middle" width="6rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_ORDER_NUMBER}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="7rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_ITEM_CODE}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="9rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_ORDER_DETAILS_ITEM_DESC}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="6rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_PLANNED_QUAN}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="5rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_THROWED_QUAN}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="5rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_THROWED_REMAINING}" />
+                                </Column>
+                                <Column hAlign="Center" vAlign="Middle" width="5rem">
+                                    <FormattedText htmlText="{i18n>OEE_LABEL_LABEL_PRINTED_QUAN}" />
+                                </Column>
+                                <Column width="6rem">
+                                </Column>
+                                <Column width="6rem">
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <HBox justifyContent="Center">
+                                        <Text text="{ShopOrdersModel>shopOrder}" />
+                                    </HBox>
+                                                    <Text text="{ShopOrdersModel>item}" />
+                                                    <Text text="{ShopOrdersModel>itemDescription}" />
+                                                    <Text text="{ShopOrdersModel>plannedQty}" />
+                                                    <Text text="{ShopOrdersModel>assembledCabinetQty}" />
+                                                    <Text text="{ShopOrdersModel>remainingCabinetQty}" />
+                                                    <Text text="{ShopOrdersModel>doneQty}" />
+                                    <Button text="{i18n>OEE_LABEL_START}" type="Accept" width="6rem" icon="sap-icon://begin" press="onPressStartOrder" enabled="{= ${ShopOrdersModel>status} !== 'ACTIVE'}" class="order-start-button" />
+                                    <Button text="{i18n>OEE_LABEL_STOP}" type="Reject" width="6rem" icon="sap-icon://stop" press="onPressStopOrder" visible="{= ${ShopOrdersModel>status} === 'ACTIVE'}" enabled="{= ${ShopOrdersModel>status} === 'ACTIVE'}" class="order-stop-button" />
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </ScrollContainer>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

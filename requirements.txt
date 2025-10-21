@@ -6,3 +6,12 @@ click
 rich
 streamlit
 pandas
+requests
+scikit-learn
+reportlab
+markdown
+plotly
+matplotlib
+seaborn
+pyvis
+graphviz

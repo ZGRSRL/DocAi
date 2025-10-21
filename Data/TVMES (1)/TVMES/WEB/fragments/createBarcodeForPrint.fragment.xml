@@ -1,0 +1,21 @@
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form">
+	<Dialog id="idCreateBarcodeForPrintDialog" title="{i18n>OEE_BTN_PRINT_LABEL}" contentWidth="35rem" class="page-header label-print-dialog">
+		<VBox justifyContent="Center" alignItems="Center" class="sapUiSmallMarginTop">
+			<Title text="{i18n>OEE_LABEL_SFC}" titleStyle="H2" />
+			<Input id="idSFCForBarcodePrint" width="30rem" enabled="false" textAlign="Center" class="sapUiLargeMarginBottom" />
+			<Title text="{i18n>OEE_LABEL_ITEM_CODE}" titleStyle="H2" />
+			<Input id="idItemCodeForBarcodePrint" width="30rem" enabled="false" textAlign="Center" class="sapUiLargeMarginBottom" />
+			<Title text="{i18n>OEE_LABEL_ORDER_DETAILS_ITEM_DESC}" titleStyle="H2" />
+			<Input id="idItemDescForBarcodePrint" width="30rem" enabled="false" textAlign="Center" class="sapUiLargeMarginBottom" />
+			<HBox width="100%" justifyContent="Center">
+				<Button width="7rem" id="idSendBarcodeForPrintDialog" text="{i18n>OEE_LABEL_PRINT}" type="Accept" press="onPressSendBarcodeForPrintDialog" class="sapUiSmallMarginEnd btn-accept" icon="sap-icon://print" />
+				<Button width="7rem" id="idCloseBarcodeForPrintDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject" press="closeBarcodeForPrintDialog" class="sapUiSmallMarginBegin btn-reject" icon="sap-icon://exit-full-screen" />
+			</HBox>
+		</VBox>
+		<buttons>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

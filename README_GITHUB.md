@@ -105,6 +105,22 @@ pandas
 
 ## 🎨 Streamlit UI Features
 
+## 🤖 ME/MII Consultant (Ollama + RAG)
+
+1) Install Ollama and pull a base model (e.g., llama3.1:8b).
+2) Create the consultant model:
+```bash
+ollama create me-mii-consultant -f Modelfile
+```
+3) Ask questions grounded in the latest analysis outputs:
+```bash
+python rag_consultant.py "MII'de BLS ile dış REST çağrısında timeout nasıl yönetilir?" --out ./streamlit_output --model me-mii-consultant
+```
+On Windows PowerShell:
+```powershell
+./run_consultant.ps1 -Question "SAPUI5'te OData v2 create hatasında en iyi pratikler?" -OutDir ./streamlit_output -Model me-mii-consultant
+```
+
 - **One-Click Folder Selection** — Quick access buttons
 - **Real-time Progress** — Progress bar and status updates
 - **Interactive Results** — Tabbed interface with multiple views

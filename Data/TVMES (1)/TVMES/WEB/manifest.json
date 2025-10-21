@@ -1,0 +1,182 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "production",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "production.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.30",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {}
+			}
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "production.i18n.i18n"
+				}
+			}
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "production.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"transition": "slide",
+				"bypassed": {
+					"target": "notFound"
+				},
+				"async": true
+			},
+			"routes": [
+				{
+					"pattern": ":?query:",
+					"name": "appHome",
+					"target": "home"
+				},
+				{
+					"pattern": "panel:?query:",
+					"name": "panelView",
+					"target": "panel"
+				},
+				{
+					"pattern": "traceability:?query:",
+					"name": "traceabilityView",
+					"target": "traceability"
+				},
+				{
+					"pattern": "typeLabel:?query:",
+					"name": "typeLabelView",
+					"target": "typeLabel"
+				},
+				{
+					"pattern": "repair:?query:",
+					"name": "repairView",
+					"target": "repair"
+				},
+				{
+					"pattern": "qualityChain:?query:",
+					"name": "qualityChainView",
+					"target": "qualityChain"
+				},
+				{
+					"pattern": "confirmation:?query:",
+					"name": "confirmationView",
+					"target": "confirmation"
+				},{
+					"pattern": "transfer:?query:",
+					"name": "transferView",
+					"target": "transfer"
+				},{
+					"pattern": "packageLabel:?query:",
+					"name": "packageLabelView",
+					"target": "packageLabel"
+				}
+			],
+			"targets": {
+				"home": {
+					"viewId": "home",
+					"viewName": "Home",
+					"viewLevel": 1
+				},
+				"notFound": {
+					"viewId": "notFound",
+					"viewName": "NotFound",
+					"transition": "fade"
+				},
+				"panel": {
+					"viewId": "panelView",
+					"viewPath": "production.view",
+					"viewName": "panel",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"traceability": {
+					"viewId": "traceabilityView",
+					"viewPath": "production.view",
+					"viewName": "traceability",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"typeLabel": {
+					"viewId": "typeLabelView",
+					"viewPath": "production.view",
+					"viewName": "typeLabel",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"repair": {
+					"viewId": "repairView",
+					"viewPath": "production.view",
+					"viewName": "repair",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"qualityChain": {
+					"viewId": "qualityChainView",
+					"viewPath": "production.view",
+					"viewName": "qualityChain",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"confirmation": {
+					"viewId": "confirmationView",
+					"viewPath": "production.view",
+					"viewName": "confirmation",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"transfer": {
+					"viewId": "transferView",
+					"viewPath": "production.view",
+					"viewName": "transfer",
+					"viewLevel": 2,
+					"transition": "fade"
+				},
+				"packageLabel": {
+					"viewId": "packageLabelView",
+					"viewPath": "production.view",
+					"viewName": "packageLabel",
+					"viewLevel": 2,
+					"transition": "fade"
+				}
+
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				},
+				{
+					"uri": "css/theme.css"
+				}
+			]
+		}
+	}
+}

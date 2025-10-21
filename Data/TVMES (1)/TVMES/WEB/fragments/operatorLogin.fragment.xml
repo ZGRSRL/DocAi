@@ -1,0 +1,56 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+	<Dialog id="idOperatorLoginDialog" title="{i18n>OEE_LABEL_OPERATOR_LOGIN}" contentWidth="100rem" contentHeight="80rem"
+		class="page-header label-print-dialog">
+		<VBox width="100%" justifyContent="Center" alignItems="Center" renderType="Bare">
+			<Title id="idWorkCenterMessageTitle" titleStyle="H2" textAlign="Center" width="90%" class="sapUiSmallMarginBottom sapUiSmallMarginTop"/>
+			<Button id="idGeneralShiftInfoMessages" text="{shiftInfoModel>/0/MESSAGE}" width="90%" visible="false"/>
+			<Button id="idOperatorNotifModel" text="{operatorNotifModel>/MESSAGE}" width="90%"
+				type="{= ${operatorNotifModel>/TYPE} === 'E' ? 'Reject' : 'Accept'}" class="sapUiSmallMarginBottom"/>
+			<Title text="{i18n>OEE_LABEL_SHIFT_SELECTION}" titleStyle="H2"/>
+			<Select width="25rem" id="idShiftSelect" class="sapUiMediumMarginBottom shift-select" items="{ShiftModel>/0/Row}" change="onChangeShift">
+				<core:ListItem key="{ShiftModel>HANDLE}" text="{ShiftModel>DESCRIPTION} ({ShiftModel>SHIFT_BEGIN} - {ShiftModel>SHIFT_END})"/>
+			</Select>
+			<Table width="90%" id="idTable" items="{UserModel>/0/Row}" class="">
+				<columns>
+					<Column>
+						<Text text="Sıra"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>OEE_LABEL_NAME}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>OEE_LABEL_OPERATOR_ID}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>OEE_LABEL_LOGIN_TIME}"/>
+					</Column>
+					<Column>
+						<Text text=""/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{UserModel>INDEX}" width="15rem" textAlign="Center"/>
+							<Text text="{UserModel>FULLNAME}" width="15rem" textAlign="Center"/>
+							<Text text="{UserModel>REGISTRY}" width="15rem" textAlign="Center"/>
+							<Text text="{UserModel>LOGIN_DATE_TIME}" width="15rem" textAlign="Center"/>
+							<Button id="idOperatorLogoutButton" press="onPressOperatorLogoutButton" width="9rem" type="Reject" class="sapUiMediumMarginBegin"
+								icon="sap-icon://log"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<buttons>
+			
+			<Button width="11rem" id="idLoginWithIDButton" text="{i18n>OEE_BTN_REGISTER_ID}" type="Accept" press="onPressLoginWithID"
+				class="sapUiSmallMarginBegin btn-reject" icon="sap-icon://add-employee"/>
+		</buttons>
+		<ToolbarSpacer/>
+		<buttons>
+			<Button width="7rem" id="idCloseDialog" text="{i18n>OEE_BTN_CLOSE}" type="Reject" press="onPressCloseOperatorLoginDialog"
+				class="sapUiSmallMarginBegin btn-reject" icon="sap-icon://exit-full-screen"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

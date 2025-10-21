@@ -1,0 +1,32 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog
+		id="repairCodesDialog"
+		title="{i18n>REPAIR_CODE_SELECTION}"
+		icon="sap-icon://survey"
+		contentWidth="90%">
+		<content>
+			<FlexBox
+				id="repairTileContainer"
+				wrap="Wrap"
+				justifyContent="Center"
+				alignContent="Center"
+				height="auto">
+				<!-- Repair code tiles will be added dynamically -->
+			</FlexBox>
+		</content>
+		<buttons>
+			<Button
+				text="{i18n>NOT_REPAIRED}"
+				type="Accept"
+				press="onMarkAsNotRepaired" /> 
+			<Button
+				text="{i18n>OEE_BTN_CLOSE}"
+				type="Reject"
+				press="onCloseRepairDialog" />
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>  

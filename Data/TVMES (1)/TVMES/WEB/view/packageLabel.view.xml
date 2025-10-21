@@ -1,0 +1,189 @@
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:u="sap.ui.unified"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="production.controller.packageLabel" displayBlock="true">
+    <Page showHeader="false">
+        <content>
+            <VBox height="100%" width="100%">
+                <HBox id="idHeaderPanel" class="">
+                    <VBox id="idHeaderPanelLeft" justifyContent="Start" alignItems="Start" width="28%">
+                        <List width="100%" class="list-text">
+                            <items>
+                                <DisplayListItem label="{i18n>OEE_LABEL_ITEM_CODE}" value="{podHDRModel>/ITEM}" visible="true" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_ORDER_NUMBER}" value="{podHDRModel>/SHOP_ORDER}" visible="true" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_SFC}" value="{podHDRModel>/SFC}" visible="true" type="Inactive" selected="false" id="activeSFCInfo" />
+                            </items>
+                        </List>
+                    </VBox>
+                    <VBox width="44%" height="100%" justifyContent="Start" alignItems="Center">
+                        <VBox class="sapUiMediumMarginEnd" width="330px">
+                            <Input id="sfcInput" value="" width="100%" submit="onSubmitStartSfc" class="list-text-Item" placeholder="{i18n>TRC_PANEL_BARCODE_PLACEHOLDER}" />
+                            <HBox height="50px" justifyContent="SpaceBetween">
+                                <Button text="{i18n>QC_TEST_NOK}" type="Warning" visible="true" enabled="true" id="testNOKButton" icon="sap-icon://employee-rejections" press="onPressTestNOK" class="header-buttonS  main-buttonS" />
+                                    <Button text="{i18n>OEE_LABEL_REPRINT_LABEL}" icon="sap-icon://print" press="openLoginDialog" class="header-buttonS  main-buttonS" id="reprintLabel" />
+                                <Button text="{i18n>OEE_LABEL_COMPLETE_PRODUCT}" type="Reject" visible="true" icon="sap-icon://complete" press="onPressComplete" class="header-buttonS  main-buttonS" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                    <VBox id="idHeaderPanelRight" justifyContent="Start" alignItems="End" width="28%">
+                        <List width="100%" class="list-text">
+                            <items>
+                                <DisplayListItem id="idPlanedQuan" label="{i18n>OEE_LABEL_PLANNED_QUAN}" value="{podHDRModel>/PLANNED_QUAN}" type="Inactive" selected="false" />
+                                <DisplayListItem label="{i18n>OEE_LABEL_PRODUCED_QUAN}" value="{podHDRModel>/THIS_STATION_COMPLETED}" type="Inactive" selected="false" />
+                                <DisplayListItem id="idRemainingQuan" label="{i18n>OEE_LABEL_REMAINING_QUAN}" value="{podHDRModel>/THIS_STATION_REMAINING}" visible="true" type="Inactive" selected="false" />
+                            </items>
+                        </List>
+                    </VBox>
+                </HBox>
+
+                <VBox justifyContent="Start" alignItems="Center" class="" renderType="Bare">
+                    <Button id="idGeneralInfoMessages" text="{messageModel>/notificationMessage}" type="{messageModel>/notificationMessageType}" width="100%" visible="false" class="buttonBigger" />
+                    <Button id="idInfoMessages" text="{parts: ['messageModel>/infoMessage', 'i18n>/${messageModel>/infoMessage}'], formatter: '.formatter.getText'}" type="{messageModel>/infoMessageType}" width="100%" visible="true" />
+                </VBox>
+                <HBox height="70%">
+                    <IconTabBar id="idIconTabBar" select="onSelectTab" expandable="false" backgroundDesign="Transparent" applyContentPadding="false" class="">
+                        <items>
+                        
+                            <IconTabFilter key="materialList" text="{i18n>TRC_MATERIAL_LIST}" icon="sap-icon://warning2" iconColor="Critical" class="icon-tab">
+                                <content>
+                                    <ScrollContainer vertical="true" horizontal="true" focusable="false" height="430px">
+                                        <Table id="materialListTable" items="{materialListModel>/}" showNoData="true" width="100%" mode="SingleSelectMaster" select="onSelectMaterialTable">
+                                            <columns>
+                                                <Column hAlign="Center" vAlign="Middle" width="20%">
+                                                    <FormattedText htmlText="{i18n>TRC_COMPONENT_CODE}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="25%">
+                                                    <FormattedText htmlText="{i18n>TRC_COMPONENT_DESC}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="15%">
+                                                    <FormattedText htmlText="{i18n>TRC_QUANTITY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="30%">
+                                                    <FormattedText htmlText="{i18n>TRC_BARCODE}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="20%">
+                                                    <Button text="{i18n>QC_MISS_CONSUMPTION}" type="Warning" width="100%" press="openLoginDialog" visible="false"/>
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem selected="{= ${materialListModel>selected} === 'Y'?true:false}">
+                                                    <customData>
+                                                        <core:CustomData key="isSelected" value="{path: 'materialListModel>selected', formatter: '.formatter.toString'}" writeToDom="true"></core:CustomData>
+                                                    </customData>
+                                                    <Text text="{materialListModel>component}" />
+                                                    <Text text="{materialListModel>componentDesc}" />
+                                                    <Text text="{materialListModel>quantity}" />
+                                                    <Text text="{= ${materialListModel>barcode} === 'N'?'---':${materialListModel>barcode}}" />
+                                                    <HBox>
+                                                        <Button text="{i18n>TRC_DISASSEMBLE}" type="Reject" width="100%" visible="{= ${materialListModel>barcode} === 'N'?false:true}" press="onPressDisassemble" class="order-stop-button" />
+                                                        <Input type="Text" placeholder="{i18n>TRC_READ_BARCODE_PLACEHOLDER}" visible="{= ${materialListModel>barcode} === 'N'?true:false}" submit="onScanBarcode" />
+                                                    </HBox>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </ScrollContainer>
+                                </content>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="true" />
+                            <IconTabFilter key="allMaterialList" text="{i18n>CONTROL_ITEM_LIST}" icon="sap-icon://approvals" iconColor="Negative" class="icon-tab">
+                                <content>
+                                    <ScrollContainer vertical="true" horizontal="true" focusable="false" height="430px">
+                                        <Table id="allMaterialListTable" items="{allMaterialListModel>/}" showNoData="true" width="100%" mode="SingleSelectMaster" select="onSelectAllMaterialTable">
+                                            <columns>
+                                                <Column hAlign="Center" vAlign="Middle" width="20%">
+                                                    <FormattedText htmlText="{i18n>TRC_COMPONENT_CODE}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="25%">
+                                                    <FormattedText htmlText="{i18n>TRC_COMPONENT_DESC}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="15%">
+                                                    <FormattedText htmlText="{i18n>TRC_QUANTITY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="30%">
+                                                    <FormattedText htmlText="{i18n>TRC_BARCODE}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="20%">
+                                                    <Button text="{i18n>QC_MISS_CONSUMPTION}" type="Warning" width="100%" press="openLoginDialog" />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem selected="{= ${allMaterialListModel>selected} === 'Y'?true:false}">
+                                                    <customData>
+                                                        <core:CustomData key="isSelected" value="{path: 'allMaterialListModel>selected', formatter: '.formatter.toString'}" writeToDom="true"></core:CustomData>
+                                                    </customData>
+                                                    <Text text="{allMaterialListModel>component}" />
+                                                    <Text text="{allMaterialListModel>componentDesc}" />
+                                                    <Text text="{allMaterialListModel>quantity}" />
+                                                    <Text text="{= ${allMaterialListModel>barcode} === 'N'?'---':${allMaterialListModel>barcode}}" />
+                                                    <HBox>
+                                                        <Button text="{i18n>TRC_DISASSEMBLE}" type="Reject" width="100px" visible="{= ${allMaterialListModel>barcode} === 'N'?false:true}" press="onPressDisassemble" class="order-stop-button"  />
+                                                        <Input type="Text" placeholder="{i18n>TRC_READ_BARCODE_PLACEHOLDER}" visible="{= ${allMaterialListModel>barcode} === 'N'?true:false}" editable="false" submit="onScanBarcode" />
+                                                    </HBox>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </ScrollContainer>
+                                </content>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="true" />
+    <IconTabFilter key="shopOrderList" text="{i18n>TRC_SHOP_ORDER_LIST}" icon="sap-icon://order-status" iconColor="Positive" class="icon-tab">
+                                <content>
+                                    <ScrollContainer vertical="true" horizontal="true" focusable="false" height="430px">
+                                        <Table id="idShopOrdersModel" items="{ShopOrdersModel>/}" showNoData="true" width="100%">
+                                            <columns>
+                                                <Column hAlign="Center" vAlign="Middle" width="15%">
+                                                    <FormattedText htmlText="{i18n>TRC_SHOP_ORDER}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="15%">
+                                                    <FormattedText htmlText="{i18n>TRC_MATERIAL}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="20%">
+                                                    <FormattedText htmlText="{i18n>TRC_MATERIAL_DESC}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_PLANNED_QTY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_ASSEMBLED_PANEL}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_REMAINING_PANEL_QTY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_PRODUCED_RESRCE_QTY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_REAMAINING_RESRCE_QTY}" />
+                                                </Column>
+                                                <Column hAlign="Center" vAlign="Middle" width="10%">
+                                                    <FormattedText htmlText="{i18n>TRC_CONFIRMED_QTY}" />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <Text text="{ShopOrdersModel>shopOrder}" />
+                                                    <Text text="{ShopOrdersModel>item}" />
+                                                    <Text text="{ShopOrdersModel>itemDescription}" />
+                                                    <Text text="{ShopOrdersModel>plannedQty}" />
+                                                    <Text text="{ShopOrdersModel>assembledCabinetQty}" />
+                                                    <Text text="{ShopOrdersModel>remainingCabinetQty}" />
+                                                    <Text text="{ShopOrdersModel>resourceProduced}" />
+                                                    <Text text="{ShopOrdersModel>resourceRemaining}" />
+                                                    <Text text="{ShopOrdersModel>doneQty}" />
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </ScrollContainer>
+                                </content>
+                            </IconTabFilter>
+                        </items>
+                    </IconTabBar>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

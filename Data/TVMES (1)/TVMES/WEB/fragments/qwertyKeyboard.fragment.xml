@@ -1,0 +1,98 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+    <Dialog id="idLoginNCDialog" title="{i18n>LOGIN_DIALOG_TITLE}" contentWidth="1024px" contentHeight="600px" stretch="false">
+        <content>
+            <VBox justifyContent="Center" width="900px" class="sapUiSmallMargin" alignItems="Center">
+                <!-- Username field with select button -->
+                <HBox justifyContent="Center" width="900px" alignItems="Center">
+                    <VBox width="750px">
+                        <HBox alignItems="Center">
+                            <Input id="idNCDialogUsername" placeholder="{i18n>NC_LOGIN_USERNAME}" width="700px" enabled="true" editable="true" textAlign="Center" class="sapUiSmallMarginBottom custom-input-large" />
+                            <Button icon="sap-icon://arrow-left" press="selectUsernameInput" tooltip="Kullanıcı adını düzenle" class="sapUiTinyMarginBegin" />
+                        </HBox>
+                    </VBox>
+                </HBox>
+                
+                <!-- Password field with select button -->
+                <HBox justifyContent="Center" width="900px" alignItems="Center" class="sapUiMediumMarginBottom">
+                    <VBox width="750px">
+                        <HBox alignItems="Center">
+                            <Input id="idNCDialogPassword" placeholder="{i18n>NC_LOGIN_PASSWORD}" width="700px" enabled="true" editable="true" type="Password" textAlign="Center" class="sapUiSmallMarginBottom custom-input-large" />
+                            <Button icon="sap-icon://arrow-left" press="selectPasswordInput" tooltip="Şifreyi düzenle" class="sapUiTinyMarginBegin" />
+                        </HBox>
+                    </VBox>
+                </HBox>
+                
+                <!-- Active input indicator and shift state indicator -->
+                <HBox justifyContent="SpaceBetween" width="780px" class="sapUiTinyMarginBottom" visible="false">
+                    <Text id="activeInputIndicator" text="Aktif Alan: Kullanıcı Adı" textAlign="Center" />
+                    <Text id="shiftStateIndicator" text="Shift: Kapalı" textAlign="Center" />
+                </HBox>
+                <HBox justifyContent="SpaceAround" width="900px" class="sapUiTinyMarginBottom">
+                    <Button id="shiftLockButton" text="{i18n>CAPS_LOCK}" icon="sap-icon://locked" press="toggleShiftLock" class="qwerty-keyboard custom-button-large" width="120px" />
+                    <Button id="shiftButton" text="{i18n>NC_SHIFT}" type="Warning" icon="sap-icon://slim-arrow-up" press="toggleShiftMode" class="qwerty-keyboard custom-button-large" width="120px" />
+                    <Button text="{i18n>DELETE_CHAR}" press="removeCharFromNCDialog" type="Reject" icon="sap-icon://slim-arrow-left" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="120px" />
+
+                </HBox>
+                <!-- Number Row (Moved to the top of keyboard) -->
+                <HBox justifyContent="Center" width="900px">
+                    <Button text="1" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large" width="70px" />
+                    <Button text="2" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="3" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="4" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="5" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="6" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="7" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="8" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="9" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button text="0" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                </HBox>
+                
+                <!-- QWERTY First Row -->
+                <HBox justifyContent="Center" width="900px" class="sapUiTinyMarginTop">
+                    <Button id="keyQ" text="q" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large" width="70px" />
+                    <Button id="keyW" text="w" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyE" text="e" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyR" text="r" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyT" text="t" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyY" text="y" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyU" text="u" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyI" text="i" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyO" text="o" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyP" text="p" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                </HBox>
+                
+                <!-- QWERTY Second Row (with Caps on left) -->
+                <HBox justifyContent="Center" width="900px" class="sapUiTinyMarginTop">
+                    <Button id="keyA" text="a" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyS" text="s" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyD" text="d" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyF" text="f" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyG" text="g" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyH" text="h" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyJ" text="j" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyK" text="k" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyL" text="l" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                </HBox>
+                
+                <!-- QWERTY Third Row (with Shift on left) -->
+                <HBox justifyContent="Center" width="900px" class="sapUiTinyMarginTop">
+                    <Button id="keyZ" text="z" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyX" text="x" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyC" text="c" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyV" text="v" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyB" text="b" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyN" text="n" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                    <Button id="keyM" text="m" press="addCharToNCDialog" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="70px" />
+                </HBox>
+                
+                
+                
+                <!-- Action Buttons -->
+                <HBox justifyContent="Center" width="900px" class="sapUiMediumMarginTop">
+                    <Button text="{i18n>NC_LOGIN_CONFIRM}" press="onPressNCDialogLogin" type="Accept" class="qwerty-keyboard custom-button-large" width="375px" />
+                    <Button text="{i18n>NC_LOGIN_CANCEL}" press="onPressNCDialogCancel" type="Reject" class="qwerty-keyboard custom-button-large sapUiTinyMarginBegin" width="375px" />
+                </HBox>
+            </VBox>
+        </content>
+    </Dialog>
+</core:FragmentDefinition> 

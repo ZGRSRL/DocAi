@@ -1,4 +1,4 @@
-# 📦 SAP ME/MII Folder Analyzer — Teslimat Özeti
+# 📦 SAPDOCAI — Teslimat Özeti
 
 ## ✅ Teslim Edilen Dosyalar
 

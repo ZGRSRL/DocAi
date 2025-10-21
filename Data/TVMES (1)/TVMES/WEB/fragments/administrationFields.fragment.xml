@@ -1,0 +1,18 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout">
+    <Dialog id="idAdministrationFieldsDialog" title="{i18n>OEE_LABEL_RESRCE_CHAR_DETAIL}" stretch="true">
+        <VBox id="settingsContainer">
+            <l:BlockLayout>
+                <l:BlockLayoutRow>
+                    <l:BlockLayoutCell>
+                    </l:BlockLayoutCell>
+                </l:BlockLayoutRow>
+            </l:BlockLayout>
+        </VBox>
+        <buttons>
+            <Button id="idSaveAdministrationFieldsDialog" text="{i18n>OEE_BTN_SAVE}" type="Accept"
+                press="saveAdministrationFieldsDialog" icon="sap-icon://accept" visible="false" />
+            <Button id="idCloseAdministrationFieldsDialog" text="{i18n>OEE_BTN_EXIT}" type="Reject"
+                press="onPressCloseAdministrationFieldsDialog" icon="sap-icon://exit-full-screen" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,30 @@
+<mvc:View controllerName="production.controller.Home" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+	<Page class="sapUiResponsiveContentPadding" showHeader="false">
+		<content>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>OEE_LABEL_PANEL_TITLE}"  press="onNavToPanel">
+			</GenericTile>	
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>TRC_TRACEABILITY_TITLE}"  press="onNavToTraceability">
+			</GenericTile>	
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>TYPE_LABEL_TITLE}"  press="onNavToTypeLabel">
+			</GenericTile>	
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>RP_REPAIR_TITLE}"  press="onNavToRepair">
+			</GenericTile>		
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>QUALITY_CHAIN_TITLE}"  press="onNavToQualityChain">
+			</GenericTile>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>PACKAGE_LABEL_TITLE}"  press="onNavToPackageLabel">
+			</GenericTile>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>CF_CONFIRMATION_TITLE}"  press="onNavToConfirmation">
+			</GenericTile>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+				header="{i18n>TR_TRANSFER_TITLE}"  press="onNavToTransfer">
+			</GenericTile>	
+		</content>
+	</Page>
+</mvc:View>
